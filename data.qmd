@@ -1,0 +1,101 @@
+---
+title: "Data"
+format: 
+  html:
+    toc: true
+    toc-location: left
+execute:
+  warning: false
+---
+
+This page shows the taxable income for different age groups, using the data sourced from different IDI tables.
+
+Note that people over 100 years old are not counted. People with taxable income less than $100 is also not included.
+
+```{r echo=FALSE}
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(metR)
+data_num_records <- read_excel("etc/taxable_income.xlsx", sheet = "Data1", skip=1)
+data_value_records <- read_excel("etc/taxable_income.xlsx", sheet = "Data2", skip=1)
+col_names <- unique(data_value_records$name)
+```
+
+```{r, echo=FALSE, results='asis'}
+
+cat("::: {.panel-tabset}\n\n")
+
+cat("# Mean vaue \n\n")
+
+  cat("::: {.panel-tabset}\n\n")
+  for (col_name in col_names) {
+    cat("## ", col_name, "\n\n")
+    proc_data <- data_value_records[data_value_records$name == col_name, ]
+    proc_data$date <- proc_data$year
+    proc_data$value <- as.numeric(proc_data$mean_value_r6_rr3)
+    proc_data$age <- as.numeric(substr(proc_data$age_group, 2, regexpr(",", proc_data$age_group) - 1))
+    
+    p <- ggplot(proc_data, aes(x = age, y = year, fill = value)) +
+      geom_tile() +
+      # Contour lines (adjust 'binwidth' for line density)
+      geom_contour(aes(z = value), color = "black", linewidth = 0.5, binwidth = 5000) +  
+      # Contour labels (optional)
+      geom_text_contour(aes(z = value, label = after_stat(level)), skip = 0) +  
+      scale_fill_gradient(low = "blue", high = "red", name = "Mean value") +  # customize color gradient
+      labs(title = col_name, x = "Age", y = "Year") +
+      theme_minimal() +  # Place theme_minimal() FIRST
+      theme(
+        panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
+      )
+    
+    print(p)
+    cat("\n\n")
+  }
+  cat(":::\n\n")
+
+
+cat("# Number of records \n\n")
+
+cat("::: {.panel-tabset}\n\n")
+
+cat("## Total records \n\n")
+total_records <- data_num_records %>% 
+  group_by(year) %>% 
+  summarise(total = sum(count_r6_rr3))
+
+
+p <- ggplot(total_records, aes(x = year, y = total)) +
+  geom_line(color = "steelblue", linewidth = 1) +
+  geom_point(color = "red", size = 2) +
+  labs(
+    title = "Total records",
+    x = "Return Period",
+    y = "Total records"
+  ) +
+  theme_minimal() +  # Place theme_minimal() FIRST
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
+  )
+print(p)
+cat("\n\n")
+
+cat("## By age \n\n")
+p <- ggplot(data_num_records, aes(x = age, y = year, fill = count_r6_rr3)) +
+  geom_tile() +  # or geom_raster()
+  scale_fill_gradient(low = "blue", high = "red", name = "number of records") +  # customize color gradient
+  labs(title = "The number of records", x = "Age", y = "Year") +
+  theme_minimal() +  # Place theme_minimal() FIRST
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
+  )
+print(p)
+cat("\n\n")
+cat(":::\n\n")
+
+cat(":::\n\n")
+
+```
