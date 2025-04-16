@@ -15,10 +15,16 @@ Note that the **income_tax_summary_table** is not shown here as we are having so
 ```{r echo=FALSE}
 library(readxl)
 library(ggplot2)
-data_num_records <- read_excel("etc/idi_tables.xlsx", sheet = "num_records (data)")[-1, ]
-data_value_records <- read_excel("etc/idi_tables.xlsx", sheet = "mean_records (data)")[-1, ]
-# table_names <- unique(data_num_records$table_name)
-table_names <- c("ir_ir3_keypoints", "ir_ir3_2000_to_2014", "ir_ir3_2013_to_2020", "ir_autocalc", "ir_pts")
+filename <- "etc/IR_data_to_check - without_raw_data - update - v5.0.xlsx"
+data_num_records <- read_excel(filename, sheet = "supplements1", skip=1)
+data_value_records <- read_excel(filename, sheet = "supplement3", skip=1)
+table_names <- c(
+  "ir_ir3_keypoints", 
+  "ir_ir3_2000_to_2014", 
+  "ir_ir3_2013_to_2020", 
+  "ir_autocalc", 
+  "ir_pts",
+  "income_tax_yr_summary_table")
 ```
 
 ```{r, echo=FALSE, results='asis'}
@@ -31,35 +37,31 @@ cat("# Number of unit records \n\n")
     cat(paste0("## **", table_name, "** \n\n")) 
     
     proc_num_records <- data_num_records[data_num_records$table_name == table_name, ]
-    col_names <- unique(proc_num_records$col_name)
-    col_names <- col_names[1]
-    for (col_name in col_names) {
-      proc_data <- proc_num_records[proc_num_records$col_name == col_name, ]
-      proc_data$date <- as.Date(proc_data$return_period)
-      proc_data$value <- as.numeric(proc_data$`Rounded value (RR3, R6)`)
-  
-      p <- ggplot(proc_data, aes(x = date, y = value)) +
-        geom_line(color = "steelblue", linewidth = 1) +
-        geom_point(color = "red", size = 2) +
-        labs(
-          title = "Number of records Over Return Period",
-          x = "Return Period",
-          y = "Number of records"  # Ensure this label exists
-        ) +
-        ylim(0, 4e6) +
-        scale_x_date(
-          limits = as.Date(c("2000-01-01", "2024-12-31")),
-          date_breaks = "1 year",
-          date_labels = "%Y"
-        ) +
-        theme_minimal() +  # Place theme_minimal() FIRST
-        theme(
-            panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
-            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
-          )
-      print(p)
-      cat("\n\n")
-    }
+    proc_num_records$date <- as.Date(paste0(proc_num_records$return_period, "-01-01"))
+    proc_num_records$value <- as.numeric(proc_num_records$`count_r6_rr3`)
+    
+    p <- ggplot(proc_num_records, aes(x = date, y = value)) +
+      geom_line(color = "steelblue", linewidth = 1) +
+      geom_point(color = "red", size = 2) +
+      labs(
+        title = "Number of records Over Return Period",
+        x = "Return Period",
+        y = "Number of records"  # Ensure this label exists
+      ) +
+      ylim(0, 4e6) +
+      scale_x_date(
+        limits = as.Date(c("2000-01-01", "2024-12-31")),
+        date_breaks = "1 year",
+        date_labels = "%Y"
+      ) +
+      theme_minimal() +  # Place theme_minimal() FIRST
+      theme(
+          panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
+        )
+    
+    print(p)
+    cat("\n\n")
   }
   cat(":::\n\n")
 
@@ -76,8 +78,8 @@ for (table_name in table_names) {
   for (col_name in col_names) {
     cat("### ", col_name, "\n\n")
     proc_data <- proc_value_records[proc_value_records$col_name == col_name, ]
-    proc_data$date <- as.Date(proc_data$`return_period (corrected)`)
-    proc_data$value <- as.numeric(proc_data$`Rounded value (R100)`)
+    proc_data$date <- as.Date(paste0(proc_data$`return_period`, "-01-01"))
+    proc_data$value <- as.numeric(proc_data$`mean_rr3`)
     
     p <- ggplot(proc_data, aes(x = date, y = value)) +
       geom_line(color = "steelblue", linewidth = 1) +

@@ -1,0 +1,25 @@
+---
+title: "Data"
+format: 
+  html:
+    toc: true
+    toc-location: left
+execute:
+  warning: false
+---
+
+```{r echo=FALSE}
+library(readxl)
+library(DT)
+filename <- "etc/IR_data_to_check - without_raw_data - update - v5.0.xlsx"
+data_value_records <- read_excel(filename, sheet = "data2", skip=1)
+
+datatable(data_value_records, extensions = 'Buttons', options = list(
+  dom = 'Bfrtip',
+  buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+  pageLength = 10,
+  searchHighlight = TRUE
+))
+
+
+```

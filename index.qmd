@@ -5,3 +5,19 @@ title: "Home"
 # Welcome to the taxable income viewer
 
 This simple data and analytics portal provides insights into the taxable income across various age groups in New Zealand. The information is derived and compiled from unit records within the Integrated Data Infrastructure (IDI). All data presented has been checked and approved for release by the IDI.
+
+
+Click the button below to download the methodology document.
+
+<button onclick="window.location.href='methodology.pdf'">Download PDF</button>
+
+
+## Versions:
+
+- **v0.1 (current version)**: the first release, contains basic income components across different age groups.
+
+- **v0.2 (submitted for IDI check)**: including more detailed income components such as ACC, wage and salary, benefits, student allowance etc.
+
+- **v0.3 (planned)**: including more income components such as tax credits.
+
+- **v0.4 (planned)**: adding additional insights and visualizations on top of the basic data

@@ -2,8 +2,9 @@ project:
   type: website
   output-dir: _site
 
+
 website:
-  title: "Taxable income viewer"
+  title: "Taxable income viewer (v0.1)"
   navbar:
     left:
       - text: "Home"
@@ -12,6 +13,8 @@ website:
         href: "data.qmd"
       - text: "Data source"
         href: "data_src.qmd"
+      - text: "Data download"
+        href: "table.qmd"
     right:
       - text: "Contact"
         href: "contact.qmd"
@@ -20,3 +23,4 @@ format:
   html:
     theme: cosmo
     toc: false
+    page-layout: full

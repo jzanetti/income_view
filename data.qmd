@@ -12,13 +12,16 @@ This page shows the taxable income for different age groups, using the data sour
 
 Note that people over 100 years old are not counted. People with taxable income less than $100 is also not included.
 
+_Note that all values are processed following the RR3 and R6 rounding rules_
+
 ```{r echo=FALSE}
 library(readxl)
 library(ggplot2)
 library(dplyr)
 library(metR)
-data_num_records <- read_excel("etc/taxable_income.xlsx", sheet = "Data1", skip=1)
-data_value_records <- read_excel("etc/taxable_income.xlsx", sheet = "Data2", skip=1)
+filename <- "etc/IR_data_to_check - without_raw_data - update - v5.0.xlsx"
+data_num_records <- read_excel(filename, sheet = "data1", skip=1)
+data_value_records <- read_excel(filename, sheet = "data2", skip=1)
 col_names <- unique(data_value_records$name)
 ```
 
@@ -33,13 +36,13 @@ cat("# Mean vaue \n\n")
     cat("## ", col_name, "\n\n")
     proc_data <- data_value_records[data_value_records$name == col_name, ]
     proc_data$date <- proc_data$year
-    proc_data$value <- as.numeric(proc_data$mean_value_r6_rr3)
+    proc_data$value <- as.numeric(proc_data$mean_value_rr3)
     proc_data$age <- as.numeric(substr(proc_data$age_group, 2, regexpr(",", proc_data$age_group) - 1))
     
     p <- ggplot(proc_data, aes(x = age, y = year, fill = value)) +
       geom_tile() +
       # Contour lines (adjust 'binwidth' for line density)
-      geom_contour(aes(z = value), color = "black", linewidth = 0.5, binwidth = 5000) +  
+      geom_contour(aes(z = value), color = "black", linewidth = 0.5, binwidth = mean(proc_data$value)) +  
       # Contour labels (optional)
       geom_text_contour(aes(z = value, label = after_stat(level)), skip = 0) +  
       scale_fill_gradient(low = "blue", high = "red", name = "Mean value") +  # customize color gradient
@@ -82,7 +85,7 @@ p <- ggplot(total_records, aes(x = year, y = total)) +
 print(p)
 cat("\n\n")
 
-cat("## By age \n\n")
+cat("## Total records (by age) \n\n")
 p <- ggplot(data_num_records, aes(x = age, y = year, fill = count_r6_rr3)) +
   geom_tile() +  # or geom_raster()
   scale_fill_gradient(low = "blue", high = "red", name = "number of records") +  # customize color gradient
@@ -94,6 +97,7 @@ p <- ggplot(data_num_records, aes(x = age, y = year, fill = count_r6_rr3)) +
   )
 print(p)
 cat("\n\n")
+
 cat(":::\n\n")
 
 cat(":::\n\n")
