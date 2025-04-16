@@ -4,8 +4,7 @@ title: "Home"
 
 # Welcome to the taxable income viewer
 
-This simple data and analytics portal provides insights into the taxable income across various age groups in New Zealand. The information is derived and compiled from unit records within the Integrated Data Infrastructure (IDI). All data presented has been checked and approved for release by the IDI.
-
+This simple data and analytics portal provides insights into the taxable income across various age groups in New Zealand. The information is derived and compiled from unit records within the Integrated Data Infrastructure (IDI). All data presented has been checked and approved for release by the IDI for the public access.
 
 Click the button below to download the methodology document.
 
