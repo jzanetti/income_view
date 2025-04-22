@@ -4,4 +4,4 @@ title: "Contact"
 
 # Contact Us
 
-This is the contact page content.
+Please contact IDI for more details about the data.

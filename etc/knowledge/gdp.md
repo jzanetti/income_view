@@ -1,0 +1,15 @@
+
+
+The table below compares **Nominal GDP**, **Real GDP**, and **GDP at Purchasing Power Parity (PPP)**, illustrating their definitions, uses, and example calculations for a hypothetical country (Country X) in 2024, with 2020 as the base year for Real GDP.
+
+| Metric | Nominal GDP | Real GDP | GDP (PPP) |
+| --- | --- | --- | --- |
+| **Definition** | Total value of goods/services produced, at current prices. | Total value of goods/services, adjusted for inflation using base-year prices. | Total value of goods/services, adjusted for purchasing power across countries. |
+| **Purpose** | Measures economy’s size in current dollars, including price changes. | Measures actual output, excluding inflation effects. | Compares economic output and living standards across countries. |
+| **Price Basis** | Current-year prices (2024). | Base-year prices (2020). | International dollars, adjusted for local price levels. |
+| **Formula** | Σ (Quantity × Current Prices) | Nominal GDP ÷ GDP Deflator<br>or Σ (Quantity × Base-Year Prices) | Nominal GDP × PPP Exchange Rate |
+| **Example Calculation** | Country X, 2024: 100 cars at $20,000, 200 computers at $1,000.<br>= (100 × $20,000) + (200 × $1,000)<br>= **$2,200,000** | 2020 prices: cars $18,000, computers $800.<br>= (100 × $18,000) + (200 × $800)<br>= **$1,960,000**<br>Or: $2,200,000 ÷ 1.122 (deflator) ≈ **$1,960,000** | PPP exchange rate: 0.6.<br>= $2,200,000 × (1 ÷ 0.6)<br>= **$3,666,667** (international dollars) |
+| **Use Case** | Assessing raw economic size or budgets. | Tracking economic growth over time. | Comparing economic welfare globally. |
+| **Example Insight** | Country X’s economy is $2.2M in 2024 prices, including inflation. | Real GDP of $1.96M (vs. $1.8M in 2023) shows \~8.9% growth. | $2.2M buys as much as $3.67M in the U.S., showing higher local purchasing power. |
+
+This table can be used to understand how different GDP metrics reflect economic activity and facilitate comparisons over time or across countries.

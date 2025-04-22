@@ -8,9 +8,15 @@ execute:
   warning: false
 ---
 
-This page shows the taxable income for different age groups, using the data sourced from different IDI tables.
+This page presents taxable income across various age groups, derived from multiple IDI tables.
 
-Note that people over 100 years old are not counted. People with taxable income less than $100 is also not included.
+Exclusions:
+
+- Individuals over 100 years old.
+
+- Those with taxable income below $100.
+
+- Values exceeding the 99th percentile.
 
 _Note that all values are processed following the RR3 and R6 rounding rules_
 
@@ -19,42 +25,137 @@ library(readxl)
 library(ggplot2)
 library(dplyr)
 library(metR)
-filename <- "etc/IR_data_to_check - without_raw_data - update - v5.0.xlsx"
-data_num_records <- read_excel(filename, sheet = "data1", skip=1)
-data_value_records <- read_excel(filename, sheet = "data2", skip=1)
+library(patchwork)
+source("utils.R")
+
+data <- read_data()
+data_value_records <- data$data_value_records
+data_num_records <- data$data_num_records
+cpi_records <- data$cpi_records
+
 col_names <- unique(data_value_records$name)
 ```
 
 ```{r, echo=FALSE, results='asis'}
+#| fig-width: 21
 
 cat("::: {.panel-tabset}\n\n")
+
+unique_groups <- unique(sapply(NAME_MAPS, function(x) x$group))
 
 cat("# Mean vaue \n\n")
 
   cat("::: {.panel-tabset}\n\n")
-  for (col_name in col_names) {
-    cat("## ", col_name, "\n\n")
-    proc_data <- data_value_records[data_value_records$name == col_name, ]
-    proc_data$date <- proc_data$year
-    proc_data$value <- as.numeric(proc_data$mean_value_rr3)
-    proc_data$age <- as.numeric(substr(proc_data$age_group, 2, regexpr(",", proc_data$age_group) - 1))
+  for (src_name in names(NAME_MAPS_REVERSED)) {
+    col_names <- unique(NAME_MAPS_REVERSED[[src_name]])
+    cat("## ", src_name, "\n\n")
     
-    p <- ggplot(proc_data, aes(x = age, y = year, fill = value)) +
-      geom_tile() +
-      # Contour lines (adjust 'binwidth' for line density)
-      geom_contour(aes(z = value), color = "black", linewidth = 0.5, binwidth = mean(proc_data$value)) +  
-      # Contour labels (optional)
-      geom_text_contour(aes(z = value, label = after_stat(level)), skip = 0) +  
-      scale_fill_gradient(low = "blue", high = "red", name = "Mean value") +  # customize color gradient
-      labs(title = col_name, x = "Age", y = "Year") +
-      theme_minimal() +  # Place theme_minimal() FIRST
-      theme(
-        panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
-        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
-      )
-    
-    print(p)
-    cat("\n\n")
+    cat("::: {.panel-tabset}\n\n")
+    for (group_name in unique_groups) {
+      cat("### ", group_name, "\n\n")
+      overlapped_col_names <- intersect(NAME_MAPS_GROUPS[[group_name]], col_names)
+      
+      if (length(overlapped_col_names) == 0) {
+        cat(paste0("Data not available in ", src_name, "\n\n"))
+        next
+      }
+      
+      # print(overlapped_col_names)
+
+      cat("::: {.panel-tabset}\n\n")
+      for (col_name in overlapped_col_names) {
+        
+        # print(col_name)
+        #if (NAME_MAPS[[col_name]]$group != group_name) {
+        #    next
+        #}
+        
+        cat("#### ", NAME_MAPS[[col_name]]$name, "\n\n")
+        
+        if (! is.null(NAME_MAPS[[col_name]]$details)) {
+          cat(NAME_MAPS[[col_name]]$details, "\n\n")
+        }
+        
+        col_name_ori <- NAME_MAPS[[col_name]]$name
+        col_name <- paste(
+          NAME_MAPS[[col_name]]$name, 
+          NAME_MAPS[[col_name]]$source, 
+          sep = "+")
+        
+        proc_data <- data_value_records[data_value_records$name == col_name, ]
+        proc_data$date <- proc_data$year
+        proc_data$value <- as.numeric(proc_data$mean_value_rr3)
+        proc_data$age <- as.numeric(substr(proc_data$age_group, 2, regexpr(",", proc_data$age_group) - 1))
+        proc_data <- left_join(proc_data, cpi_records, by = "year")
+        proc_data$value_scaled <- proc_data$value / proc_data$scaled_cpi
+        
+        # Define a common color range based on both variables
+        color_min <- min(min(proc_data$value), min(proc_data$value_scaled))
+        color_max <- max(max(proc_data$value), max(proc_data$value_scaled))
+        
+        
+        p1 <- ggplot(proc_data, aes(x = year, y = age, fill = value)) +
+          geom_tile() +
+          # Contour lines (adjust 'binwidth' for line density)
+          geom_contour(aes(z = value), color = "black", linewidth = 0.5, binwidth = mean(proc_data$value)) +  
+          # Contour labels (optional)
+          geom_text_contour(aes(z = value, label = after_stat(level)), skip = 0) +  
+          scale_fill_gradient(
+            low = "blue", 
+            high = "red", 
+            name = "Mean value",
+            limits = c(color_min, color_max))+  # customize color gradient
+          scale_x_continuous(expand = c(0, 0)) +  # Remove padding on x-axis
+          scale_y_continuous(expand = c(0, 0)) +  # Remove padding on y-axis
+          labs(title = col_name_ori, x = "Year", y = "Age") +
+          theme_minimal() +  # Place theme_minimal() FIRST
+          theme(
+            panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),  # Rotate x-tick labels
+            # legend.position = "none",  # Remove legend from p2
+            panel.grid = element_blank(),
+            plot.title = element_text(size = 20)  # Adjust title size here
+          )
+        
+        p2 <- ggplot(proc_data, aes(x = year, y = age, fill = value_scaled)) +
+          geom_tile() +
+          # Contour lines (adjust 'binwidth' for line density)
+          geom_contour(aes(z = value_scaled), color = "black", linewidth = 0.5, binwidth = mean(proc_data$value)) +  
+          # Contour labels (optional)
+          geom_text_contour(aes(z = value_scaled, label = after_stat(level)), skip = 0) +  
+          scale_fill_gradient(
+            low = "blue", 
+            high = "red", 
+            name = "Mean value\nCPI adjusted", 
+            limits = c(color_min, color_max))+  # customize color gradient
+          scale_x_continuous(expand = c(0, 0)) +  # Remove padding on x-axis
+          scale_y_continuous(expand = c(0, 0)) +  # Remove padding on y-axis
+          labs(title = paste0(col_name_ori, " (CPI adjusted)"), x = "Year", y = "Age") +
+          theme_minimal() +  # Place theme_minimal() FIRST
+          theme(
+            panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),  # Rotate x-tick labels
+            panel.grid = element_blank(),
+            plot.title = element_text(size = 20)  # Adjust title size here
+          )
+        # combined_plot <- p1 + p2 + plot_layout(widths = c(1, 1))
+        cat("::: {.panel-tabset}\n\n")
+        cat("### Original \n\n")
+        print(p1)
+        cat("\n\n")
+        
+        cat("### CPI adjusted \n\n")
+        cat("The quarterly CPI is currently averaged over calendar years, with plans to transition to tax-year calculations in the future\n\n")
+        print(p2)
+        cat("\n\n")
+        cat(":::\n\n")
+        
+        
+      }
+      cat(":::\n\n")
+    }
+    cat(":::\n\n")
+
   }
   cat(":::\n\n")
 
@@ -89,7 +190,9 @@ cat("## Total records (by age) \n\n")
 p <- ggplot(data_num_records, aes(x = age, y = year, fill = count_r6_rr3)) +
   geom_tile() +  # or geom_raster()
   scale_fill_gradient(low = "blue", high = "red", name = "number of records") +  # customize color gradient
-  labs(title = "The number of records", x = "Age", y = "Year") +
+  labs(title = "The number of records", x = "Age", y = "Year") +      
+  scale_x_continuous(expand = c(0, 0)) +  # Remove padding on x-axis
+  scale_y_continuous(expand = c(0, 0)) +  # Remove padding on y-axis
   theme_minimal() +  # Place theme_minimal() FIRST
   theme(
     panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),

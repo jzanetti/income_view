@@ -1,5 +1,5 @@
 ---
-title: "Data"
+title: "Data download"
 format: 
   html:
     toc: true
@@ -11,15 +11,273 @@ execute:
 ```{r echo=FALSE}
 library(readxl)
 library(DT)
-filename <- "etc/IR_data_to_check - without_raw_data - update - v5.0.xlsx"
-data_value_records <- read_excel(filename, sheet = "data2", skip=1)
+library(tidyr)
+source("constants.R")
+```
+
+::: {.panel-tabset}
+## Taxable Income
+
+::: {.panel-tabset}
+
+### Total taxable income
+```{r echo=FALSE}
+data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2", skip=1)
+
+data_value_records <- data_value_records[data_value_records$name == "taxable_income", ]
+
+data_value_records <- data_value_records[, c("year", "age_group", "mean_value_rr3")]
+
+names(data_value_records) <- c("year", "age", "taxable_income")
+
+datatable(data_value_records, extensions = 'Buttons', options = list(
+  dom = 'Bfrtip',
+  buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+  pageLength = 10,
+  searchHighlight = TRUE,
+    scrollX = TRUE,
+    initComplete = JS(
+      "function(settings, json) {",
+      "  $(this.api().table().container()).css({'width': '33%'});",
+      "}"
+    )
+),
+  rownames = FALSE  # Hide row names/index
+)
+```
+
+### Data source
+
+The taxable income dataset is sourced from New Zealand's Integrated Data Infrastructure (IDI), aggregated at the national level, with RR3 and R6 confidentiality rules applied.
+
+```{r echo=FALSE}
+data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2", skip=1)
 
 datatable(data_value_records, extensions = 'Buttons', options = list(
   dom = 'Bfrtip',
   buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
   pageLength = 10,
   searchHighlight = TRUE
-))
+),
+  rownames = FALSE  # Hide row names/index
+)
+```
 
+:::
+
+## Economic Data
+
+::: {.panel-tabset}
+### From RBNZ/Stats NZ
+
+::: {.panel-tabset}
+#### The Consumers Price Index (CPI)
+The CPI data is obtained from RBNZ, see the link [here](https://www.rbnz.govt.nz/statistics/series/economic-indicators/prices).
+
+```{r echo=FALSE} 
+library(readxl)
+library(dplyr)
+library(stringr)
+library(DT)
+source("constants.R")
+
+cpi_records <- read_excel(CPI_DATA_PATH_RBNZ, sheet = "Data", skip=4)
+cpi_records <- cpi_records[, c("Series Id", "CPI.Q.C.ia", "CPI.Q.C.iaq")]
+names(cpi_records) <- c("date", "CPI (index)", "CPI (q/%q)")
+
+cpi_records$date <- as.Date(cpi_records$date)
+
+datatable(cpi_records, extensions = 'Buttons', options = list(
+  dom = 'Bfrtip',
+  buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+  pageLength = 10,
+  searchHighlight = TRUE,
+  scrollX = TRUE,
+  initComplete = JS(
+    "function(settings, json) {",
+    "  $(this.api().table().container()).css({'width': '33%'});",
+    "}"
+  )
+),
+  rownames = FALSE  # Hide row names/index
+)
+```
+:::
+
+### From TSY/Stats NZ (HYEF 2024)
+
+The economic data obtained from HYEF contains both historical and forecast data, see the link [here](https://www.treasury.govt.nz/publications/efu/half-year-economic-and-fiscal-update-2024). 
+
+```{r, echo=FALSE, results='asis'}
+all_data <- list()
+all_data_index <- 1
+for (data_name in names(HEFU_DATA_CFG)) {
+
+  proc_records <- read_excel(
+    HYEF_DATA_PATH_TSY, sheet = data_name, skip=HEFU_DATA_CFG[[data_name]]$skip)
+  proc_records <- proc_records[, names(HEFU_DATA_CFG[[data_name]]$names)]
+  names(proc_records) <- unname(unlist(HEFU_DATA_CFG[[data_name]]$names))
+  
+  proc_records$date <- as.Date(proc_records$date)
+
+  all_data[[all_data_index]] <- proc_records
+  all_data_index <- all_data_index + 1
+}
+
+result <- Reduce(
+  function(x, y) merge(x, y, by = "date", all = TRUE),  # Full join
+  all_data
+)
+
+result <- result %>%
+  mutate(year = format(date, "%Y")) %>%  # Extract year from date
+  group_by(year) %>%                     # Group by year
+  summarise(across(.cols = -date, ~ signif(mean(.x, na.rm = TRUE), digits = 3)))
+
+datatable(
+  result, 
+  extensions = 'Buttons', 
+  options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+    pageLength = 10,
+    searchHighlight = TRUE,
+    scrollX = TRUE
+  ),
+  rownames = FALSE  # Hide row names/index
+)
 
 ```
+
+
+### From World Bank Open Data
+
+The data obtained from World bank data portal, see the link [here](https://data.worldbank.org/indicator/NY.GDP.MKTP.CD). 
+
+```{r, echo=FALSE, results='asis'}
+data <- read_excel(
+  WORLD_BANK_DATA_PATH, sheet = "Data")
+
+data <- data[!data$`Series Name` %in% c("Data from database: World Development Indicators", "Last Updated: 04/15/2025"  ), ]
+data <- data[!is.na(data$`Series Name`), ]
+
+colnames(data) <- gsub("\\s*\\[YR[0-9]{4}\\]", "", colnames(data))
+data <- subset(data, select = -c(`Series Code`, `Country Name`, `Country Code`))
+names(data)[names(data) == "Series Name"] <- "name"
+
+data <- data %>%
+  pivot_longer(
+    cols = -name,              # Select all columns except 'name'
+    names_to = "year",         # Name of the new column for years
+    values_to = "value"        # Name of the new column for values
+  )
+
+data <- data[, c("year", "name", "value")]
+
+datatable(
+  data, 
+  extensions = 'Buttons', 
+  options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+    pageLength = 10,
+    searchHighlight = TRUE,
+    scrollX = TRUE
+  ),
+  rownames = FALSE  # Hide row names/index
+)
+
+```
+
+:::
+
+## Population Projection
+
+The population projection data is obtained from Stats NZ, see the link [here](https://www.google.com/search?client=safari&rls=en&q=population+projection+nz&ie=UTF-8&oe=UTF-8).
+
+```{r echo=FALSE}
+library(readxl)
+library(dplyr)
+library(stringr)
+library(DT)
+source("constants.R")
+
+pop_projection <- read_excel(POP_PROJECTION_PATH, sheet = "Table 1")
+pop_data <- pop_projection[, c("Table 1", "...5")]
+names(pop_data) <- c("info", "value")
+
+age_range <- c(
+  "0–14",
+  "15–39",
+  "40–64",
+  "65+",
+  "85+"
+)
+
+all_data <- list()
+data_index <- 1
+for (proc_age in age_range) {
+  proc_age_info <- paste("Population aged", proc_age, "years (000)", sep = " ")
+  index <- which(pop_data$info == proc_age_info)[1]  # Get the first row index where column_name is "xxx"
+  selected_data <- pop_data[(index+1):(index+12),]
+  selected_data$age <- proc_age
+  
+  selected_data$info <- gsub("\\(base\\)", "", selected_data$info)
+  selected_data$value <- as.numeric(selected_data$value) * 1000.0
+  all_data[[data_index]] <- selected_data
+  data_index <- data_index + 1
+}
+
+combined_df <- do.call(rbind, all_data)
+names(combined_df) <- c("year", "value", "age")
+combined_df$year <- as.numeric(combined_df$year)
+
+df_65 <- subset(combined_df, age == "65+")
+df_85 <- subset(combined_df, age == "85+")
+
+# Merge by year to align data
+merged <- merge(df_65, df_85, by = "year", suffixes = c("_65", "_85"))
+
+# Calculate value for "65-85"
+new_rows <- data.frame(
+  year = merged$year,
+  age = "65–85",
+  value = merged$value_65 - merged$value_85
+)
+
+combined_df <- rbind(combined_df, new_rows)
+
+combined_df <- combined_df %>%
+  filter(combined_df$age != "65+")
+
+combined_df <- combined_df[, c("year", "age", "value")]
+
+datatable(
+  combined_df, 
+  extensions = 'Buttons', 
+  options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+    pageLength = 10,
+    searchHighlight = TRUE,
+    scrollX = TRUE,
+    initComplete = JS(
+      "function(settings, json) {",
+      "  $(this.api().table().container()).css({'width': '33%'});",
+      "}"
+    )
+  ),
+  rownames = FALSE  # Hide row names/index
+)
+```
+
+## About 
+
+<!-- ::: {.panel-tabset} -->
+<!-- ### GDP -->
+<!-- ```{r, echo=FALSE, results='asis'} -->
+<!-- readme_content <- readLines("etc/knowledge/gdp.md") -->
+<!-- cat(readme_content, sep = "\n") -->
+<!-- ``` -->
+<!-- ::: -->
+:::

@@ -10,11 +10,10 @@ execute:
 
 The taxable income data is sourced from multiple tables within IDI. Each table show different information and cover different years. This section shows some basic statistics of each tables.
 
-Note that the **income_tax_summary_table** is not shown here as we are having some data issues.
-
 ```{r echo=FALSE}
 library(readxl)
 library(ggplot2)
+library(data.table)
 filename <- "etc/IR_data_to_check - without_raw_data - update - v5.0.xlsx"
 data_num_records <- read_excel(filename, sheet = "supplements1", skip=1)
 data_value_records <- read_excel(filename, sheet = "supplement3", skip=1)
@@ -33,6 +32,39 @@ cat("::: {.panel-tabset}\n\n")
 cat("# Number of unit records \n\n")
 
   cat("::: {.panel-tabset}\n\n")
+  
+  cat(paste0("## **All data sources** \n\n"))
+  proc_num_records <- copy(data_num_records)
+  proc_num_records$date <- as.Date(paste0(proc_num_records$return_period, "-01-01"))
+  proc_num_records$value <- as.numeric(proc_num_records$`count_r6_rr3`)
+  
+  p <- ggplot(proc_num_records, aes(x = date, y = value, color = table_name, group = table_name)) +
+    geom_line(linewidth = 1) +
+    geom_point(size = 2) +
+    labs(
+      title = "Number of Records Over Return Period",
+      x = "Return Period",
+      y = "Number of Records"
+    ) +
+    ylim(0, 4e6) +
+    scale_x_date(
+      limits = as.Date(c("2000-01-01", "2023-12-31")),
+      date_breaks = "1 year",
+      date_labels = "%Y",
+      expand = c(0, 0) # Remove padding
+    ) +
+    scale_color_manual(values = scales::hue_pal()(length(unique(data_num_records$table_name)))) + # Assign distinct colors
+    theme_minimal() +
+    theme(
+      panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+      legend.position = "bottom", # Add legend to show table_name labels
+      legend.title = element_blank()
+    )
+  
+  print(p)
+  cat("\n\n")
+    
   for (table_name in table_names) {
     cat(paste0("## **", table_name, "** \n\n")) 
     
@@ -52,7 +84,8 @@ cat("# Number of unit records \n\n")
       scale_x_date(
         limits = as.Date(c("2000-01-01", "2024-12-31")),
         date_breaks = "1 year",
-        date_labels = "%Y"
+        date_labels = "%Y",
+        expand = c(0, 0) # Remove padding
       ) +
       theme_minimal() +  # Place theme_minimal() FIRST
       theme(
