@@ -1,0 +1,167 @@
+---
+title: "Model"
+format: 
+  html:
+    toc: true
+    toc-location: left
+execute:
+  warning: false
+---
+
+The study presents a **causal analysis** of the impact of unemployment rate on the total taxable income of individuals between 15 and 25 years old, with specific adjustments to isolate the effects of GDP and CPI.
+
+This **causal approach** yields distinct insights compared to traditional **correlation-based** studies, such as those employing linear or other regression models. While conventional methods typically identify correlations between taxable income and GDP fluctuations, they often struggle to disentangle the confounding influences from other social and economic dynamics. By contrast, the **causal methodology** can be employed for assessing the direct effects of unemployment rate on taxable income, independent of factors such as GDP and CPI (and others in the dataset).
+
+The **the Bayesian Causal Forest (BCF) algorithm** is used here.
+
+For demonstration purposes, the current study utilizes the following data:
+
+- Outcome: Total taxable income.
+- Treatment: Unemployment rate (national average)
+- Covariate: GDP and CPI.
+
+The results presented here are preliminary, and further investigation incorporating additional data (e.g., unemployment rate for young people, and other economic and population dynamical data) and refined methodologies is anticipated in subsequent iterations of this study.
+
+The methodology is still under development, **Do not use this study for any official purposes**
+
+```{r echo=FALSE}
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(metR)
+library(tidyr)
+library(patchwork)
+library(stochtree)
+library(Metrics)
+source("constants.R")
+```
+
+```{r echo=FALSE}
+data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2", skip=1)
+data_value_records <- data_value_records[data_value_records$name == "taxable_income", ]
+data_value_records <- data_value_records[, c("year", "age_group", "mean_value_rr3")]
+names(data_value_records) <- c("year", "age", "taxable_income")
+data_value_records <- data_value_records[data_value_records$age %in% c("[15,20)", "[20,25)"), ]
+taxable_income <- data_value_records %>%
+  group_by(year) %>%
+  summarise(mean_taxable_income = mean(taxable_income, na.rm = TRUE))
+```
+
+```{r echo=FALSE}
+data <- read_excel(
+  WORLD_BANK_DATA_PATH, sheet = "Data")
+
+data <- data[!data$`Series Name` %in% c("Data from database: World Development Indicators", "Last Updated: 04/15/2025"  ), ]
+data <- data[!is.na(data$`Series Name`), ]
+
+colnames(data) <- gsub("\\s*\\[YR[0-9]{4}\\]", "", colnames(data))
+data <- subset(data, select = -c(`Series Code`, `Country Name`, `Country Code`))
+names(data)[names(data) == "Series Name"] <- "name"
+
+data <- data %>%
+  pivot_longer(
+    cols = -name,              # Select all columns except 'name'
+    names_to = "year",         # Name of the new column for years
+    values_to = "value"        # Name of the new column for values
+  )
+
+worldbank_data <- data[, c("year", "name", "value")]
+
+worldbank_data$year <- as.numeric(worldbank_data$year)
+
+worldbank_data <- worldbank_data[(worldbank_data$name %in% c(
+  "Unemployment, total (% of total labor force) (national estimate)",
+  "Consumer price index (2010 = 100)", 
+  "GDP (constant 2015 US$)") & (worldbank_data$year <= 2023)
+),]
+
+worldbank_data$value <- as.numeric(worldbank_data$value)
+
+```
+
+## Model validation
+
+To evaluate the predictive performance of our model, we conducted 50 independent simulation runs. In each run, we generated 4-year _forecasts_ of taxable income based on the unemployment rate, incorporating Gross Domestic Product (GDP) and the Consumer Price Index (CPI) as covariates. The figure below illustrates the distribution of the prediction errors (defined as the difference between the predicted and actual taxable income) across all simulation runs and forecast horizons.
+
+Our analysis revealed a relatively small bias (mean prediction error close to zero), suggesting that the model does not systematically over- or under-predict taxable income on average. However, the Root Mean Squared Error (RMSE) was notably larger than the bias. This discrepancy indicates that while the average prediction error is minimal, the magnitude of individual prediction errors exhibits considerable variability. This suggests that the model's predictions, while unbiased, are subject to substantial random fluctuations or noise.
+
+Furthermore, visual inspection of the figure reveals a tendency for the prediction errors to be larger when the level of taxable income is higher. This observation implies that the model's accuracy appears to decrease as the income being predicted increases."
+
+```{r echo=FALSE}
+# Covariants
+X <- data.frame(
+  gdp = worldbank_data[worldbank_data$name == "GDP (constant 2015 US$)",]$value,
+  cpi = worldbank_data[worldbank_data$name == "Consumer price index (2010 = 100)",]$value
+)
+
+# Treatment
+Z <- worldbank_data[worldbank_data$name == "Unemployment, total (% of total labor force) (national estimate)",]$value
+
+# Outcome
+y <- taxable_income$mean_taxable_income
+
+n <- length(y)
+trials <- 1:50
+all_results <- list()
+test_set_pct <- 0.15
+for (index in trials) {
+  n_test <- round(test_set_pct * n)
+  n_train <- n - n_test
+  test_inds <- sort(sample(1:n, n_test, replace = FALSE))
+  train_inds <- (1:n)[!((1:n) %in% test_inds)]
+  
+  # Subset data
+  X_test <- X[test_inds, ]
+  X_train <- X[train_inds, ]
+  Z_test <- Z[test_inds]
+  Z_train <- Z[train_inds]
+  y_test <- y[test_inds]
+  y_train <- y[train_inds]
+  
+  
+  # Model
+  bcf_model <- bcf(
+    X_train = data.matrix(X_train), # training characteristics/covariants
+    Z_train = Z_train, # training treatment
+    y_train = y_train, # training outcome
+    X_test = data.matrix(X_test), # testing characteristics/covariants
+    Z_test = Z_test, # testing treatment
+    # num_gfr = 10, # Number of "warm-start" iterations run using the grow-from-root algorithm (He and Hahn, 2021).
+    num_burnin = 150, # Number of "burn-in" iterations of the MCMC sampler. Defaults to 0. Ignored if num_gfr > 0.
+    num_mcmc = 1000 # Number of "retained" iterations of the MCMC sampler. Defaults to 100. If this is set to 0, GFR (XBART) samples will be retained.
+  )
+  
+  forest_preds_y_mcmc = bcf_model$y_hat_test
+  y_avg_mcmc = apply(forest_preds_y_mcmc, 1, mean)
+  
+  # Create a data frame with true and predicted values
+  proc_data <- data.frame(real = y_test, model = y_avg_mcmc)
+  
+  all_results[[index]] <- proc_data
+  
+  index <- index + 1
+}
+
+all_results <- do.call(rbind, all_results)
+
+bias_value <- round(mean(all_results$model - all_results$real), 3)
+rmse_value <- round(rmse(all_results$model, all_results$real), 3)
+
+# Create the scatterplot with reference line
+p0 <- ggplot(all_results, aes(x = model, y = real)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "black", linetype = "dashed") +
+  labs(title = paste0("Bias: ", bias_value, "\nRMSE: ", rmse_value), 
+       x = "Average estimated outcome", y = "True outcome") +
+  theme_minimal() +  # Place theme_minimal() FIRST
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
+  )
+
+print(p0)
+```
+
+## Model prediction
+
+  

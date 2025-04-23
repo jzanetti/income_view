@@ -22,7 +22,7 @@ read_data <- function() {
   data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2", skip=1)
   data_value_records <- replace_col_values(data_value_records)
 
-  cpi_records <- read_excel(CPI_DATA_PATH, sheet = "Data", skip=4)
+  cpi_records <- read_excel(CPI_DATA_PATH_RBNZ, sheet = "Data", skip=4)
   cpi_records <- cpi_records[, c("Series Id", "CPI.Q.C.ia")]
   names(cpi_records) <- c("date", "CPI")
   cpi_records <- cpi_records %>%
