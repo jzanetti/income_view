@@ -4,14 +4,16 @@ project:
 
 
 website:
-  title: "Taxable income viewer (v0.1)"
+  title: "Taxable income viewer (v0.2)"
   navbar:
     left:
       - text: "Home"
         href: "home.qmd"
-      - text: "Mean value"
+      - text: "Income (Mean)"
         href: "data.qmd"
-      - text: "Record number"
+      - text: "Income (Ratio)"
+        href: "ratio.qmd"
+      - text: "Data source"
         href: "data_src.qmd"
       - text: "Download"
         href: "table.qmd"

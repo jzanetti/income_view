@@ -1,0 +1,79 @@
+---
+title: "Income (Ratio)"
+format: 
+  html:
+    toc: true
+    toc-location: left
+execute:
+  warning: false
+---
+
+
+```{r, echo=FALSE, results='asis'}
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(metR)
+library(tidyr)
+library(patchwork)
+library(scales)
+source("utils.R")
+
+data <- read_data()
+data_ratio_records <- data$data_ratio_records
+
+all_vars <- unique(data_ratio_records$variable)
+
+all_vars <- c(
+  "inc_tax_yr_sum_WAS_tot_amt",
+  "inc_tax_yr_sum_BEN_tot_amt",
+  "inc_tax_yr_sum_ACC_tot_amt",
+  "inc_tax_yr_sum_PEN_tot_amt",
+  "inc_tax_yr_sum_STU_tot_amt",
+  "self_employment",
+  "investment"
+)
+
+cat("::: {.panel-tabset}\n\n")
+for (proc_var in all_vars) {
+  
+  proc_var_str <- NAME_MAPS[[proc_var]]$name
+  
+  if (is.null(proc_var_str)) {
+    if (proc_var == "self_employment") {
+      proc_var_str <- "Self Employment"
+    }
+    else if (proc_var == "investment") {
+      proc_var_str <- "Investment"
+    }
+    else {
+      proc_var_str <- proc_var
+    }
+  }
+
+  cat("## ", proc_var_str, "\n\n")
+  
+  proc_data <- data_ratio_records[data_ratio_records$variable == proc_var,]
+  proc_data$year <- as.numeric(proc_data$year)
+  proc_data$proc_mean_rr3 <- as.numeric(proc_data$proc_mean_rr3)
+  p <- ggplot(proc_data, 
+         aes(x = year, y = proc_mean_rr3, color = age_group)) +
+    geom_line() +
+    scale_y_continuous(labels = percent_format(scale = 100)) +
+    labs(title = paste0("Income Percentage for ", proc_var_str),
+         x = "Year", y = "Percentage") +
+    theme_minimal() +  # Place theme_minimal() FIRST
+    theme(
+      panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),  # Rotate x-tick labels
+      panel.grid = element_blank(),
+      plot.title = element_text(size = 20)  # Adjust title size here
+    )
+  
+  print(p)
+  cat("\n\n")
+}
+
+cat(":::\n\n")
+
+```
