@@ -8,12 +8,12 @@ website:
   navbar:
     left:
       - text: "Home"
-        href: "index.qmd"
-      - text: "Taxable income"
+        href: "home.qmd"
+      - text: "Mean value"
         href: "data.qmd"
-      - text: "Data source"
+      - text: "Record number"
         href: "data_src.qmd"
-      - text: "Data download"
+      - text: "Download"
         href: "table.qmd"
     right:
       - text: "Contact"

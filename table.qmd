@@ -22,7 +22,7 @@ source("constants.R")
 
 ### Total taxable income
 ```{r echo=FALSE}
-data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2", skip=1)
+data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2-v2.0", skip=1)
 
 data_value_records <- data_value_records[data_value_records$name == "taxable_income", ]
 
@@ -51,7 +51,7 @@ datatable(data_value_records, extensions = 'Buttons', options = list(
 The taxable income dataset is sourced from New Zealand's Integrated Data Infrastructure (IDI), aggregated at the national level, with RR3 and R6 confidentiality rules applied.
 
 ```{r echo=FALSE}
-data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2", skip=1)
+data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2-v2.0", skip=1)
 
 datatable(data_value_records, extensions = 'Buttons', options = list(
   dom = 'Bfrtip',

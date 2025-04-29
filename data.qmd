@@ -40,12 +40,14 @@ col_names <- unique(data_value_records$name)
 ```{r, echo=FALSE, results='asis'}
 #| fig-width: 21
 
-cat("::: {.panel-tabset}\n\n")
+# cat("::: {.panel-tabset}\n\n")
 
 unique_groups <- unique(sapply(NAME_MAPS, function(x) x$group))
 
-cat("# Mean vaue \n\n")
+#for (proc_name in c("Mean value")) {
 
+  # cat(paste0("# ", proc_name," \n\n"))
+  
   cat("::: {.panel-tabset}\n\n")
   for (src_name in names(NAME_MAPS_REVERSED)) {
     col_names <- unique(NAME_MAPS_REVERSED[[src_name]])
@@ -53,23 +55,18 @@ cat("# Mean vaue \n\n")
     
     cat("::: {.panel-tabset}\n\n")
     for (group_name in unique_groups) {
-      cat("### ", group_name, "\n\n")
+      # cat("### ", group_name, "\n\n")
       overlapped_col_names <- intersect(NAME_MAPS_GROUPS[[group_name]], col_names)
       
       if (length(overlapped_col_names) == 0) {
-        cat(paste0("Data not available in ", src_name, "\n\n"))
+        # cat(paste0("Data not available in ", src_name, "\n\n"))
         next
       }
       
-      # print(overlapped_col_names)
+      cat("### ", group_name, "\n\n")
 
       cat("::: {.panel-tabset}\n\n")
       for (col_name in overlapped_col_names) {
-        
-        # print(col_name)
-        #if (NAME_MAPS[[col_name]]$group != group_name) {
-        #    next
-        #}
         
         cat("#### ", NAME_MAPS[[col_name]]$name, "\n\n")
         
@@ -85,7 +82,13 @@ cat("# Mean vaue \n\n")
         
         proc_data <- data_value_records[data_value_records$name == col_name, ]
         proc_data$date <- proc_data$year
+        
+        #if (proc_name == "Mean value"){
         proc_data$value <- as.numeric(proc_data$mean_value_rr3)
+        #}
+        #else if (proc_name == "Median value") {
+        #    proc_data$value <- as.numeric(proc_data$median_value_rr3)
+        #}
         proc_data$age <- as.numeric(substr(proc_data$age_group, 2, regexpr(",", proc_data$age_group) - 1))
         proc_data <- left_join(proc_data, cpi_records, by = "year")
         proc_data$value_scaled <- proc_data$value / proc_data$scaled_cpi
@@ -98,9 +101,9 @@ cat("# Mean vaue \n\n")
         p1 <- ggplot(proc_data, aes(x = year, y = age, fill = value)) +
           geom_tile() +
           # Contour lines (adjust 'binwidth' for line density)
-          geom_contour(aes(z = value), color = "black", linewidth = 0.5, binwidth = mean(proc_data$value)) +  
+          # geom_contour(aes(z = value), color = "black", linewidth = 0.5, binwidth = mean(proc_data$value)) +
           # Contour labels (optional)
-          geom_text_contour(aes(z = value, label = after_stat(level)), skip = 0) +  
+          # geom_text_contour(aes(z = value, label = after_stat(level)), skip = 0) +  
           scale_fill_gradient(
             low = "blue", 
             high = "red", 
@@ -121,9 +124,9 @@ cat("# Mean vaue \n\n")
         p2 <- ggplot(proc_data, aes(x = year, y = age, fill = value_scaled)) +
           geom_tile() +
           # Contour lines (adjust 'binwidth' for line density)
-          geom_contour(aes(z = value_scaled), color = "black", linewidth = 0.5, binwidth = mean(proc_data$value)) +  
+          # geom_contour(aes(z = value_scaled), color = "black", linewidth = 0.5, binwidth = mean(proc_data$value)) +  
           # Contour labels (optional)
-          geom_text_contour(aes(z = value_scaled, label = after_stat(level)), skip = 0) +  
+          # geom_text_contour(aes(z = value_scaled, label = after_stat(level)), skip = 0) +  
           scale_fill_gradient(
             low = "blue", 
             high = "red", 
@@ -161,49 +164,54 @@ cat("# Mean vaue \n\n")
   cat(":::\n\n")
 
 
-cat("# Number of records \n\n")
-
-cat("::: {.panel-tabset}\n\n")
-
-cat("## Total records \n\n")
-total_records <- data_num_records %>% 
-  group_by(year) %>% 
-  summarise(total = sum(count_r6_rr3))
-
-
-p <- ggplot(total_records, aes(x = year, y = total)) +
-  geom_line(color = "steelblue", linewidth = 1) +
-  geom_point(color = "red", size = 2) +
-  labs(
-    title = "Total records",
-    x = "Return Period",
-    y = "Total records"
-  ) +
-  theme_minimal() +  # Place theme_minimal() FIRST
-  theme(
-    panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
-    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
-  )
-print(p)
-cat("\n\n")
-
-cat("## Total records (by age) \n\n")
-p <- ggplot(data_num_records, aes(x = age, y = year, fill = count_r6_rr3)) +
-  geom_tile() +  # or geom_raster()
-  scale_fill_gradient(low = "blue", high = "red", name = "number of records") +  # customize color gradient
-  labs(title = "The number of records", x = "Age", y = "Year") +      
-  scale_x_continuous(expand = c(0, 0)) +  # Remove padding on x-axis
-  scale_y_continuous(expand = c(0, 0)) +  # Remove padding on y-axis
-  theme_minimal() +  # Place theme_minimal() FIRST
-  theme(
-    panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
-    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
-  )
-print(p)
-cat("\n\n")
-
-cat(":::\n\n")
-
-cat(":::\n\n")
+  
+  
+  
+#}
+# 
+# cat("# Number of records \n\n")
+# 
+# cat("::: {.panel-tabset}\n\n")
+# 
+# cat("## Total records \n\n")
+# total_records <- data_num_records %>% 
+#   group_by(year) %>% 
+#   summarise(total = sum(count_r6_rr3))
+# 
+# 
+# p <- ggplot(total_records, aes(x = year, y = total)) +
+#   geom_line(color = "steelblue", linewidth = 1) +
+#   geom_point(color = "red", size = 2) +
+#   labs(
+#     title = "Total records",
+#     x = "Return Period",
+#     y = "Total records"
+#   ) +
+#   theme_minimal() +  # Place theme_minimal() FIRST
+#   theme(
+#     panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+#     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
+#   )
+# print(p)
+# cat("\n\n")
+# 
+# cat("## Total records (by age) \n\n")
+# p <- ggplot(data_num_records, aes(x = age, y = year, fill = count_r6_rr3)) +
+#   geom_tile() +  # or geom_raster()
+#   scale_fill_gradient(low = "blue", high = "red", name = "number of records") +  # customize color gradient
+#   labs(title = "The number of records", x = "Age", y = "Year") +      
+#   scale_x_continuous(expand = c(0, 0)) +  # Remove padding on x-axis
+#   scale_y_continuous(expand = c(0, 0)) +  # Remove padding on y-axis
+#   theme_minimal() +  # Place theme_minimal() FIRST
+#   theme(
+#     panel.border = element_rect(color = "black", fill = NA, linewidth = 1.5),
+#     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)  # Rotate x-tick labels
+#   )
+# print(p)
+# cat("\n\n")
+# 
+# cat(":::\n\n")
+# 
+# cat(":::\n\n")
 
 ```

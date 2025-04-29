@@ -19,7 +19,7 @@ replace_col_values <- function(data, column_name = "name", mapping = NAME_MAPS) 
 
 read_data <- function() {
   data_num_records <- read_excel(INCOME_DATA_PATH, sheet = "data1", skip=1)
-  data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2", skip=1)
+  data_value_records <- read_excel(INCOME_DATA_PATH, sheet = INCOME_DATA_SHEETNAME, skip=1)
   data_value_records <- replace_col_values(data_value_records)
 
   cpi_records <- read_excel(CPI_DATA_PATH_RBNZ, sheet = "Data", skip=4)

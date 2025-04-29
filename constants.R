@@ -6,6 +6,8 @@ HYEF_DATA_PATH_TSY <- "etc/hyefu24-charts-data.xlsx"
 POP_PROJECTION_PATH <- "etc/national-population-projections-2022base-2073.xlsx"
 WORLD_BANK_DATA_PATH <- "etc/Worldbank_extracted_data1.xlsx"
 
+INCOME_DATA_SHEETNAME <- "data2-v2.0"
+
 
 
 NAME_MAPS <- list(
@@ -14,39 +16,64 @@ NAME_MAPS <- list(
   # --------------------
   "taxable_income" = list(
     name = "Total taxable income",
-    details = NULL,
-    group = "Total taxable income",
+    details = "Total taxable income obtained from different sources (e.g., IR3, IR Autocalc/PTS, and Income Tax Year Summary)",
+    group = "Total",
     source = "Combined"),
   "inc_tax_yr_sum_all_srces_tot_amt" = list(
     name = "Total taxable income",
     details = NULL,
-    group = "Total taxable income",
+    group = "Total",
     source = "Income Tax Year Summary"),
   "ir_taxable_inc_amt" = list(
     name = "Total taxable income", 
     details = NULL,
-    group = "Total taxable income",
+    group = "Total",
     source = "IR Autocalc and IR PTS"),
   "ir_ir3_taxable_income_amt" = list(
     name = "Total taxable income", 
     details = NULL,
-    group = "Total taxable income",
+    group = "Total",
     source = "IR3_keypoints and IR3 adhoc"),
 
   # --------------------
   # Taxed at source income
   # --------------------
   "ir_tot_gross_earnings_amt" = list(
-    name = "'Taxed at source' income", 
+    name = "Total 'Taxed at source' income", 
     details = "Wage and Salary, Benefits, Pension etc.",
     group = "Taxed at source income",
     source = "IR Autocalc and IR PTS"),
   "ir_ir3_gross_earnings_407_amt" = list(
-    name = "'Taxed at source' income", 
+    name = "Total 'Taxed at source' income", 
     details = "Wage and Salary, Benefits, Pension etc.",
     group = "Taxed at source income",
     source = "IR3_keypoints and IR3 adhoc"),
-  
+  "inc_tax_yr_sum_WAS_tot_amt" = list(
+    name = "Wage and salary income", 
+    details = NULL,
+    group = "Taxed at source income",
+    source = "Income Tax Year Summary"), 
+  "inc_tax_yr_sum_BEN_tot_amt" = list(
+    name = "Benefits income", 
+    details = NULL,
+    group = "Taxed at source income",
+    source = "Income Tax Year Summary"), 
+  "inc_tax_yr_sum_ACC_tot_amt" = list(
+    name = "ACC income", 
+    details = NULL,
+    group = "Taxed at source income",
+    source = "Income Tax Year Summary"), 
+  "inc_tax_yr_sum_PEN_tot_amt" = list(
+    name = "Pension income", 
+    details = NULL,
+    group = "Taxed at source income",
+    source = "Income Tax Year Summary"), 
+  "inc_tax_yr_sum_STU_tot_amt" = list(
+    name = "Student income income", 
+    details = NULL,
+    group = "Taxed at source income",
+    source = "Income Tax Year Summary"),
+
   # --------------------
   # Investment
   # --------------------

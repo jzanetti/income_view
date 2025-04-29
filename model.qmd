@@ -37,7 +37,7 @@ source("constants.R")
 ```
 
 ```{r echo=FALSE}
-data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2", skip=1)
+data_value_records <- read_excel(INCOME_DATA_PATH, sheet = "data2-v2.0", skip=1)
 data_value_records <- data_value_records[data_value_records$name == "taxable_income", ]
 data_value_records <- data_value_records[, c("year", "age_group", "mean_value_rr3")]
 names(data_value_records) <- c("year", "age", "taxable_income")
