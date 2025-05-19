@@ -1,6 +1,7 @@
 
 
 INCOME_DATA_PATH <- "etc/IR_data_to_check - without_raw_data - update - v5.0.xlsx"
+INCOME_RATIO_PATH <- "etc/data_to_check - data ratio.xlsx"
 CPI_DATA_PATH_RBNZ <- "etc/CPI.xlsx"
 HYEF_DATA_PATH_TSY <- "etc/hyefu24-charts-data.xlsx"
 POP_PROJECTION_PATH <- "etc/national-population-projections-2022base-2073.xlsx"

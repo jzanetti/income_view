@@ -1,5 +1,5 @@
 ---
-title: "Data"
+title: "Income (Mean)"
 format: 
   html:
     toc: true
@@ -17,6 +17,11 @@ Exclusions:
 - Those with taxable income below $100.
 
 - Values exceeding the 99th percentile.
+
+The dataset integrates three sources (Income Tax Year Summary, Autocal/PTS, and IR3) covering various income types and potentially distinct population segments (refer to the Record Number section for details). 
+Be aware of possible overlaps between sources, and the data quality is still under evaluation. 
+
+Total taxable income is calculated by combining data from all three sources.
 
 _Note that all values are processed following the RR3 and R6 rounding rules_
 

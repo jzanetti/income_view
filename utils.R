@@ -21,6 +21,7 @@ read_data <- function() {
   data_num_records <- read_excel(INCOME_DATA_PATH, sheet = "data1", skip=1)
   data_value_records <- read_excel(INCOME_DATA_PATH, sheet = INCOME_DATA_SHEETNAME, skip=1)
   data_value_records <- replace_col_values(data_value_records)
+  data_ratio_records <- read_excel(INCOME_RATIO_PATH, sheet = "data", skip=3)
 
   cpi_records <- read_excel(CPI_DATA_PATH_RBNZ, sheet = "Data", skip=4)
   cpi_records <- cpi_records[, c("Series Id", "CPI.Q.C.ia")]
@@ -39,6 +40,7 @@ read_data <- function() {
     list(
       data_num_records = data_num_records,
       data_value_records = data_value_records,
+      data_ratio_records = data_ratio_records,
       cpi_records = cpi_records
     )
   )

@@ -13,9 +13,7 @@ Click the button below to download the methodology document.
 
 ## Versions:
 
-- **v0.1 (current version)**: the first release, contains basic income components across different age groups.
-
-- **v0.2 (submitted for IDI check)**: including more detailed income components such as ACC, wage and salary, benefits, student allowance etc.
+- **v0.2 (current version)**: including more detailed income components such as ACC, wage and salary, benefits, student allowance etc.
 
 - **v0.3 (planned)**: including more income components such as tax credits.
 
