@@ -4,15 +4,16 @@ library(ggplot2)
 library(readxl)
 library(dplyr)
 library(shinyjs)
+library(DT) 
 
 billion_converter <- 1000000000.0
 million_converter <- 1000000.0
 
-data_path <- "../etc/data_to_check - without_raw_data - v3.0.xlsx"
+data_path <- "data_to_check - without_raw_data - v3.0.xlsx"
+proj_path <- "income_proj.csv"
 
 df_all <- read_excel(data_path, sheet = "data", skip = 1)
-
-
+df_proj <- read.csv(proj_path)
 
 df_all <- df_all %>%
   rename(
@@ -27,41 +28,165 @@ df_all <- df_all[, c("year", "name", "age", "value1", "value2")]
 
 ui <- fluidPage(
   useShinyjs(),
-  titlePanel("Taxable income time series plot"),
-  sidebarLayout(
-    sidebarPanel(
-      radioButtons("plot_type", "Select plot type", 
-                   choices = c(
-                     "income timeseries",
-                     "income percentage",
-                     "age contribution"
-                   ),
-                   selected = "income timeseries"),
-      radioButtons("value_type", "Select value", 
-                   choices = c(
-                     "total",
-                     "mean"
-                   ),
-                   selected = "total"),
-      radioButtons("sensitivity", "Select sensitivity",
-                   choices = c(TRUE, FALSE), 
-                   selected = FALSE),
-      uiOutput("add_name"),
-      uiOutput("add_age"),
-      uiOutput("add_unit"),
-      uiOutput("use_norm"),
-      width = 2
-    ),
-    mainPanel(
-      h5("To minimize data errors, any data exceeding the 99.999% percentile are excluded"),
-      plotOutput("Timeseriesplot"),
-      width = 10
+  titlePanel("Taxable income time series analysis"),
+  tabsetPanel(
+  tabPanel(
+    title = "Recorded income",
+    sidebarLayout(
+      sidebarPanel(
+        radioButtons("plot_type", "Select plot type", 
+                     choices = c(
+                       "income timeseries",
+                       "income percentage",
+                       "age contribution"
+                     ),
+                     selected = "income timeseries"),
+        radioButtons("value_type", "Select value", 
+                     choices = c(
+                       "total",
+                       "mean"
+                     ),
+                     selected = "total"),
+        radioButtons("sensitivity", "Select sensitivity",
+                     choices = c(TRUE, FALSE), 
+                     selected = FALSE),
+        uiOutput("add_name"),
+        uiOutput("add_age"),
+        uiOutput("add_unit"),
+        uiOutput("use_norm"),
+        width = 2
+      ),
+      mainPanel(
+        h5("To minimize data errors, any data exceeding the 99.999% percentile are excluded"),
+        plotOutput("Timeseriesplot"),
+        width = 10
+      )
+    )),
+  # Tab 2: Placeholder for Additional Content
+  tabPanel(
+    title = "Projected income",
+    sidebarLayout(
+      sidebarPanel(
+        radioButtons("plot_type2", "Select plot type", 
+                     choices = c(
+                       "total",
+                       "labour",
+                       "capital",
+                       "benefits"
+                     ),
+                     selected = "total"),
+        radioButtons("sensitivity2", "Select sensitivity",
+                     choices = c(TRUE, FALSE), 
+                     selected = FALSE),
+        radioButtons(
+          "unit2", "Select unit: ",
+          choices = c("billion", "million", "raw"),
+          selected = "raw"
+        ),
+        checkboxGroupInput("Scenario", "Select scenario", 
+                     choices = c(
+                       "Median",
+                       "5th percentile",
+                       "25th percentile",
+                       "75th percentile",
+                       "95th percentile",
+                       "No immigration",
+                       "Cyclic immigration",
+                       "High immigration"
+                     ),
+                     selected = "Median"),
+        width = 2
+      ),
+      mainPanel(
+        h5("A Stacked model (Linear regression + XGBoost + Densely connected neural network) is applied"),
+        plotOutput("Projplot"),
+        width = 10
+      )
     )
+  ),
+  # Tab 3: data download
+  tabPanel(
+    title = "Data download",
+    DTOutput("table"),
+    downloadButton("download_csv", "Download as CSV")
+  )
+  
   )
 )
 
 server <- function(input, output, session) {
 
+  
+  output$table <- renderDT({ 
+    
+    df <- df_all[, c("year", "name", "age", "value1")] %>% 
+      rename("income" = "value1")
+    datatable(df, options = list(pageLength = 10, autoWidth = TRUE)) 
+    }
+  )
+  
+  output$download_csv <- downloadHandler(
+    
+    filename = function() {
+      paste("data-", Sys.Date(), ".csv", sep = "") 
+    }, 
+    content = function(file) { 
+      write.csv(df_all, file, row.names = FALSE) 
+      } 
+  )
+  
+  output$Projplot <- renderPlot({
+
+    req(input$plot_type2)
+    req(input$sensitivity2)
+    req(input$Scenario)
+    req(input$unit2)
+    
+    df <- df_proj
+    
+    input_income_types <- input$plot_type2
+    if(input$sensitivity2 == "TRUE"){
+      if ("labour" == input_income_types) {
+        input_income_types <- "labour_sensitivity"
+      }
+      if ("capital" == input_income_types) {
+        input_income_types <- "capital_sensitivity"
+      }
+    }
+    
+    
+    proj_data <- df %>% filter(
+      scenario %in% input$Scenario, status == "predicted", income_type == input_income_types
+    )
+    proj_data <- proj_data[, c("year", "all_income", "scenario")]
+    obs_data <- df %>% filter(
+      status == "observed", income_type == input_income_types
+    )
+    obs_data <- obs_data[, c("year", "all_income")]
+    obs_data$scenario = "history"
+
+    df <- bind_rows(obs_data, proj_data)
+    
+    if (input$unit2 == "million") {
+      df$all_income <- df$all_income / million_converter
+    } else if (input$unit2 == "billion") {
+      df$all_income <- df$all_income / billion_converter
+    }
+    
+    ggplot(df, aes(x = year, y = all_income, color=scenario)) + 
+      geom_line() +
+      labs(title = "Time Series", x = "Year", y = "Value") +
+      theme_minimal(base_size = 15) +
+      theme(
+        plot.background = element_rect(fill = "white", color = NA),
+        plot.title = element_text(size = 20, face = "bold"),
+        axis.title = element_text(size = 15),
+        axis.text = element_text(size = 12),
+        panel.border = element_rect(fill = NA, size = 1, color = "black"),
+        panel.background = element_rect(fill = "white")
+      )
+  })
+  
   output$add_name <- renderUI({
     if (input$plot_type == "income timeseries") {
       checkboxGroupInput(
@@ -114,10 +239,10 @@ server <- function(input, output, session) {
   
   output$use_norm <- renderUI({
     if (input$plot_type == "income timeseries") {
-      checkboxGroupInput(
+      radioButtons(
         "norm", "Min/Max norm: ",
         choices = c("True", "False"),
-        selected = "False"
+        selected = "False",
       )
     }
   })

@@ -1,0 +1,673 @@
+year,all_income,status,scenario,income_type
+2023,38992444573.91937,predicted,Median,labour
+2028,46965407202.3047,predicted,Median,labour
+2033,54126774833.06668,predicted,Median,labour
+2038,60380331636.95883,predicted,Median,labour
+2043,64520047170.85188,predicted,Median,labour
+2048,68205363252.18428,predicted,Median,labour
+2053,72406030731.21484,predicted,Median,labour
+2058,77777356026.18318,predicted,Median,labour
+2063,82266476637.82011,predicted,Median,labour
+2068,86120671172.82703,predicted,Median,labour
+2073,90204606912.32652,predicted,Median,labour
+2023,38992444573.91937,predicted,5th percentile,labour
+2028,45712169495.6673,predicted,5th percentile,labour
+2033,51918127405.00552,predicted,5th percentile,labour
+2038,57308330563.24115,predicted,5th percentile,labour
+2043,60336088230.65625,predicted,5th percentile,labour
+2048,62705157203.968796,predicted,5th percentile,labour
+2053,65429816212.399765,predicted,5th percentile,labour
+2058,69126702063.4465,predicted,5th percentile,labour
+2063,71478676054.08905,predicted,5th percentile,labour
+2068,73077101852.47542,predicted,5th percentile,labour
+2073,74746305612.48386,predicted,5th percentile,labour
+2023,38992444573.91937,predicted,25th percentile,labour
+2028,46469770098.87636,predicted,25th percentile,labour
+2033,53112596586.745316,predicted,25th percentile,labour
+2038,59053663665.18474,predicted,25th percentile,labour
+2043,62795501033.7617,predicted,25th percentile,labour
+2048,65961611532.79144,predicted,25th percentile,labour
+2053,69518018913.79115,predicted,25th percentile,labour
+2058,74160845928.29604,predicted,25th percentile,labour
+2063,77858980594.29318,predicted,25th percentile,labour
+2068,80772094347.46014,predicted,25th percentile,labour
+2073,83923515765.24377,predicted,25th percentile,labour
+2023,38992444573.91937,predicted,75th percentile,labour
+2028,47474883660.75084,predicted,75th percentile,labour
+2033,54970472731.25577,predicted,75th percentile,labour
+2038,61675387670.10791,predicted,75th percentile,labour
+2043,66332678794.84686,predicted,75th percentile,labour
+2048,70491751072.7727,predicted,75th percentile,labour
+2053,75362622641.99718,predicted,75th percentile,labour
+2058,81472984059.68268,predicted,75th percentile,labour
+2063,86795205232.59941,predicted,75th percentile,labour
+2068,91606991431.32373,predicted,75th percentile,labour
+2073,96784603161.23822,predicted,75th percentile,labour
+2023,38992444573.91937,predicted,95th percentile,labour
+2028,48223593097.59123,predicted,95th percentile,labour
+2033,56283138296.28578,predicted,95th percentile,labour
+2038,63565910334.63588,predicted,95th percentile,labour
+2043,68856909511.11925,predicted,95th percentile,labour
+2048,73814289397.58034,predicted,95th percentile,labour
+2053,79571079001.98209,predicted,95th percentile,labour
+2058,86770734903.26558,predicted,95th percentile,labour
+2063,93458489666.45543,predicted,95th percentile,labour
+2068,99539201650.31369,predicted,95th percentile,labour
+2073,106183675530.58496,predicted,95th percentile,labour
+2023,38992444573.91937,predicted,No immigration,labour
+2028,45791625006.38887,predicted,No immigration,labour
+2033,51347470291.098236,predicted,No immigration,labour
+2038,56092893797.808,predicted,No immigration,labour
+2043,58627669067.235504,predicted,No immigration,labour
+2048,60483720962.31091,predicted,No immigration,labour
+2053,62453984289.532394,predicted,No immigration,labour
+2058,64970080055.89958,predicted,No immigration,labour
+2063,65945306981.07921,predicted,No immigration,labour
+2068,65968903642.51431,predicted,No immigration,labour
+2073,65715489766.629395,predicted,No immigration,labour
+2023,38992444573.91937,predicted,Cyclic immigration,labour
+2028,46965407202.3047,predicted,Cyclic immigration,labour
+2033,53335426469.596756,predicted,Cyclic immigration,labour
+2038,60305910482.36168,predicted,Cyclic immigration,labour
+2043,63650940674.2583,predicted,Cyclic immigration,labour
+2048,67967330404.5865,predicted,Cyclic immigration,labour
+2053,71339584285.90515,predicted,Cyclic immigration,labour
+2058,77326855375.61226,predicted,Cyclic immigration,labour
+2063,81008010515.48439,predicted,Cyclic immigration,labour
+2068,85392365069.69064,predicted,Cyclic immigration,labour
+2073,88646533526.11537,predicted,Cyclic immigration,labour
+2023,38992444573.91937,predicted,High immigration,labour
+2028,48071748009.48012,predicted,High immigration,labour
+2033,56598325216.299515,predicted,High immigration,labour
+2038,64391459793.8347,predicted,High immigration,labour
+2043,70306282582.51123,predicted,High immigration,labour
+2048,76109399359.13356,predicted,High immigration,labour
+2053,82733554026.77496,predicted,High immigration,labour
+2058,90911889605.1288,predicted,High immigration,labour
+2063,98567990088.87135,predicted,High immigration,labour
+2068,106138229384.06,predicted,High immigration,labour
+2073,114344776868.43515,predicted,High immigration,labour
+2000,9288513118.8,observed,,labour
+2001,9732969733.8,observed,,labour
+2002,10438078693.2,observed,,labour
+2003,11197562165.4,observed,,labour
+2004,12159514627.2,observed,,labour
+2005,13237430384.4,observed,,labour
+2006,14441631560.4,observed,,labour
+2007,15458614344.0,observed,,labour
+2008,16774224107.4,observed,,labour
+2009,17965596576.6,observed,,labour
+2010,18218100265.2,observed,,labour
+2011,19076356987.8,observed,,labour
+2012,20141514130.2,observed,,labour
+2013,21249461989.2,observed,,labour
+2014,22374265328.4,observed,,labour
+2015,23773383842.4,observed,,labour
+2016,25269692080.2,observed,,labour
+2017,26487017937.0,observed,,labour
+2018,28269047492.4,observed,,labour
+2019,30157772163.0,observed,,labour
+2020,32256603348.0,observed,,labour
+2021,33502765710.0,observed,,labour
+2022,36679935662.4,observed,,labour
+2023,40166406227.4,observed,,labour
+2023,43703327329.22658,predicted,Median,labour_sensitivity
+2028,52946634625.75664,predicted,Median,labour_sensitivity
+2033,61212988554.32193,predicted,Median,labour_sensitivity
+2038,68480778685.775696,predicted,Median,labour_sensitivity
+2043,73090130833.79666,predicted,Median,labour_sensitivity
+2048,77231545180.17036,predicted,Median,labour_sensitivity
+2053,82133508597.2979,predicted,Median,labour_sensitivity
+2058,88613275066.3146,predicted,Median,labour_sensitivity
+2063,93917541352.29767,predicted,Median,labour_sensitivity
+2068,98422399044.2593,predicted,Median,labour_sensitivity
+2073,103319311191.33073,predicted,Median,labour_sensitivity
+2023,43703327329.22658,predicted,5th percentile,labour_sensitivity
+2028,51807987411.07393,predicted,5th percentile,labour_sensitivity
+2033,59120862398.589294,predicted,5th percentile,labour_sensitivity
+2038,65461836541.7659,predicted,5th percentile,labour_sensitivity
+2043,68882848477.31349,predicted,5th percentile,labour_sensitivity
+2048,71612415199.75833,predicted,5th percentile,labour_sensitivity
+2053,74921823482.45328,predicted,5th percentile,labour_sensitivity
+2058,79562753628.81866,predicted,5th percentile,labour_sensitivity
+2063,82582191926.37276,predicted,5th percentile,labour_sensitivity
+2068,84564219557.55112,predicted,5th percentile,labour_sensitivity
+2073,86786352019.94215,predicted,5th percentile,labour_sensitivity
+2023,43703327329.22658,predicted,25th percentile,labour_sensitivity
+2028,52505324658.476364,predicted,25th percentile,labour_sensitivity
+2033,60244859808.995224,predicted,25th percentile,labour_sensitivity
+2038,67175520997.16243,predicted,25th percentile,labour_sensitivity
+2043,71359322885.14053,predicted,25th percentile,labour_sensitivity
+2048,74940853732.60445,predicted,25th percentile,labour_sensitivity
+2053,79160066957.32497,predicted,25th percentile,labour_sensitivity
+2058,84872126851.15616,predicted,25th percentile,labour_sensitivity
+2063,89301112472.65443,predicted,25th percentile,labour_sensitivity
+2068,92753221812.5283,predicted,25th percentile,labour_sensitivity
+2073,96605571264.95212,predicted,25th percentile,labour_sensitivity
+2023,43703327329.22658,predicted,75th percentile,labour_sensitivity
+2028,53416129123.49776,predicted,75th percentile,labour_sensitivity
+2033,62002537190.65419,predicted,75th percentile,labour_sensitivity
+2038,69740493276.62144,predicted,75th percentile,labour_sensitivity
+2043,74892739822.83394,predicted,75th percentile,labour_sensitivity
+2048,79558096964.84431,predicted,75th percentile,labour_sensitivity
+2053,85198059324.8026,predicted,75th percentile,labour_sensitivity
+2058,92470710260.32648,predicted,75th percentile,labour_sensitivity
+2063,98699858480.75134,predicted,75th percentile,labour_sensitivity
+2068,104254788081.24602,predicted,75th percentile,labour_sensitivity
+2073,110380456988.94347,predicted,75th percentile,labour_sensitivity
+2023,43703327329.22658,predicted,95th percentile,labour_sensitivity
+2028,54086971726.1557,predicted,95th percentile,labour_sensitivity
+2033,63237544662.5331,predicted,95th percentile,labour_sensitivity
+2038,71568319608.83627,predicted,95th percentile,labour_sensitivity
+2043,77413704051.37292,predicted,95th percentile,labour_sensitivity
+2048,82941074975.34192,predicted,95th percentile,labour_sensitivity
+2053,89565485890.32285,predicted,95th percentile,labour_sensitivity
+2058,97982838531.02827,predicted,95th percentile,labour_sensitivity
+2063,105657632394.2519,predicted,95th percentile,labour_sensitivity
+2068,112644339400.84996,predicted,95th percentile,labour_sensitivity
+2073,120367376661.70131,predicted,95th percentile,labour_sensitivity
+2023,43703327329.22658,predicted,No immigration,labour_sensitivity
+2028,51837963259.637634,predicted,No immigration,labour_sensitivity
+2033,58556109373.26796,predicted,No immigration,labour_sensitivity
+2038,64404966568.68707,predicted,No immigration,labour_sensitivity
+2043,67528564475.6931,predicted,No immigration,labour_sensitivity
+2048,69963113604.49814,predicted,No immigration,labour_sensitivity
+2053,72704900152.25111,predicted,No immigration,labour_sensitivity
+2058,76232553781.67155,predicted,No immigration,labour_sensitivity
+2063,77730453553.79141,predicted,No immigration,labour_sensitivity
+2068,78011842813.02957,predicted,No immigration,labour_sensitivity
+2073,78026220409.59215,predicted,No immigration,labour_sensitivity
+2023,43703327329.22658,predicted,Cyclic immigration,labour_sensitivity
+2028,52946634625.75664,predicted,Cyclic immigration,labour_sensitivity
+2033,60480415737.55524,predicted,Cyclic immigration,labour_sensitivity
+2038,68400183626.11969,predicted,Cyclic immigration,labour_sensitivity
+2043,72274498801.07097,predicted,Cyclic immigration,labour_sensitivity
+2048,76962999249.38466,predicted,Cyclic immigration,labour_sensitivity
+2053,81102223681.11664,predicted,Cyclic immigration,labour_sensitivity
+2058,88099255050.95958,predicted,Cyclic immigration,labour_sensitivity
+2063,92641425465.55876,predicted,Cyclic immigration,labour_sensitivity
+2068,97541454130.07367,predicted,Cyclic immigration,labour_sensitivity
+2073,101641520892.04152,predicted,Cyclic immigration,labour_sensitivity
+2023,43703327329.22658,predicted,High immigration,labour_sensitivity
+2028,53967777428.69325,predicted,High immigration,labour_sensitivity
+2033,63495770927.93594,predicted,High immigration,labour_sensitivity
+2038,72223930555.07826,predicted,High immigration,labour_sensitivity
+2043,78558871101.2041,predicted,High immigration,labour_sensitivity
+2048,84797370007.02988,predicted,High immigration,labour_sensitivity
+2053,92169567916.71689,predicted,High immigration,labour_sensitivity
+2058,101575846043.17966,predicted,High immigration,labour_sensitivity
+2063,110292935719.54778,predicted,High immigration,labour_sensitivity
+2068,118922385471.01344,predicted,High immigration,labour_sensitivity
+2073,128468920197.65028,predicted,High immigration,labour_sensitivity
+2000,11001262445.4,observed,,labour_sensitivity
+2001,11475173139.0,observed,,labour_sensitivity
+2002,12261782835.0,observed,,labour_sensitivity
+2003,12939397669.8,observed,,labour_sensitivity
+2004,13984176728.4,observed,,labour_sensitivity
+2005,15157204462.8,observed,,labour_sensitivity
+2006,16389466416.0,observed,,labour_sensitivity
+2007,17473687426.2,observed,,labour_sensitivity
+2008,18904196950.8,observed,,labour_sensitivity
+2009,19936262280.6,observed,,labour_sensitivity
+2010,20213043839.4,observed,,labour_sensitivity
+2011,21298020148.2,observed,,labour_sensitivity
+2012,22605839109.0,observed,,labour_sensitivity
+2013,23810513449.8,observed,,labour_sensitivity
+2014,25253755119.0,observed,,labour_sensitivity
+2015,26766866175.6,observed,,labour_sensitivity
+2016,28455785788.2,observed,,labour_sensitivity
+2017,30009400589.4,observed,,labour_sensitivity
+2018,31987072167.6,observed,,labour_sensitivity
+2019,34081452977.4,observed,,labour_sensitivity
+2020,36279470374.2,observed,,labour_sensitivity
+2021,37844477103.6,observed,,labour_sensitivity
+2022,41437871508.6,observed,,labour_sensitivity
+2023,44864287088.4,observed,,labour_sensitivity
+2023,18297764298.50349,predicted,Median,capital
+2028,22033307348.142616,predicted,Median,capital
+2033,25358288701.62482,predicted,Median,capital
+2038,28298443742.27718,predicted,Median,capital
+2043,30087758258.22299,predicted,Median,capital
+2048,31709188979.635303,predicted,Median,capital
+2053,33698417164.80451,predicted,Median,capital
+2058,36406891788.286285,predicted,Median,capital
+2063,38585648714.97598,predicted,Median,capital
+2068,40417876590.65869,predicted,Median,capital
+2073,42453540689.113144,predicted,Median,capital
+2023,18297764298.50349,predicted,5th percentile,capital
+2028,21695155279.880795,predicted,5th percentile,capital
+2033,24699343766.31338,predicted,5th percentile,capital
+2038,27301018914.46339,predicted,5th percentile,capital
+2043,28654153742.51659,predicted,5th percentile,capital
+2048,29753924525.492046,predicted,5th percentile,capital
+2053,31149097776.95811,predicted,5th percentile,capital
+2058,33157689451.62611,predicted,5th percentile,capital
+2063,34489294752.172134,predicted,5th percentile,capital
+2068,35343665500.397385,predicted,5th percentile,capital
+2073,36352332893.35985,predicted,5th percentile,capital
+2023,18297764298.50349,predicted,25th percentile,capital
+2028,21906720641.867847,predicted,25th percentile,capital
+2033,25049263321.45994,predicted,25th percentile,capital
+2038,27866429054.01298,predicted,25th percentile,capital
+2043,29499822717.50961,predicted,25th percentile,capital
+2048,30912635613.641346,predicted,25th percentile,capital
+2053,32651940569.530277,predicted,25th percentile,capital
+2058,35080074206.360245,predicted,25th percentile,capital
+2063,36924097024.74629,predicted,25th percentile,capital
+2068,38348692312.54544,predicted,25th percentile,capital
+2073,39979222541.15112,predicted,25th percentile,capital
+2023,18297764298.50349,predicted,75th percentile,capital
+2028,22175589922.548767,predicted,75th percentile,capital
+2033,25602284412.454258,predicted,75th percentile,capital
+2038,28709523511.413105,predicted,75th percentile,capital
+2043,30694591990.62991,predicted,75th percentile,capital
+2048,32514873336.668995,predicted,75th percentile,capital
+2053,34784948389.2608,predicted,75th percentile,capital
+2058,37788378332.11925,predicted,75th percentile,capital
+2063,40322834932.30612,predicted,75th percentile,capital
+2068,42553471850.97511,predicted,75th percentile,capital
+2073,45067981799.89714,predicted,75th percentile,capital
+2023,18297764298.50349,predicted,95th percentile,capital
+2028,22370305470.29175,predicted,95th percentile,capital
+2033,25987206433.182743,predicted,95th percentile,capital
+2038,29300831341.794086,predicted,95th percentile,capital
+2043,31545523552.276554,predicted,95th percentile,capital
+2048,33687271819.851025,predicted,95th percentile,capital
+2053,36335408301.784546,predicted,95th percentile,capital
+2058,39751937755.58545,predicted,95th percentile,capital
+2063,42814339359.8392,predicted,95th percentile,capital
+2068,45601786220.43001,predicted,95th percentile,capital
+2073,48717588067.21716,predicted,95th percentile,capital
+2023,18297764298.50349,predicted,No immigration,capital
+2028,21681286728.18554,predicted,No immigration,capital
+2033,24501477890.717823,predicted,No immigration,capital
+2038,26995985180.82848,predicted,No immigration,capital
+2043,28329358608.390965,predicted,No immigration,capital
+2048,29418638941.761456,predicted,No immigration,capital
+2053,30695956549.38558,predicted,No immigration,capital
+2058,32347928198.85319,predicted,No immigration,capital
+2063,33092439001.872654,predicted,No immigration,capital
+2068,33304220061.43635,predicted,No immigration,capital
+2073,33427158080.155582,predicted,No immigration,capital
+2023,18297764298.50349,predicted,Cyclic immigration,capital
+2028,22033307348.142616,predicted,Cyclic immigration,capital
+2033,25133209984.60641,predicted,Cyclic immigration,capital
+2038,28268321190.262127,predicted,Cyclic immigration,capital
+2043,29831918850.53564,predicted,Cyclic immigration,capital
+2048,31603685018.70696,predicted,Cyclic immigration,capital
+2053,33359723870.039654,predicted,Cyclic immigration,capital
+2058,36202306543.77182,predicted,Cyclic immigration,capital
+2063,38139983833.42027,predicted,Cyclic immigration,capital
+2068,40048888814.35562,predicted,Cyclic immigration,capital
+2073,41825969601.95247,predicted,Cyclic immigration,capital
+2023,18297764298.50349,predicted,High immigration,capital
+2028,22345605967.01184,predicted,High immigration,capital
+2033,26056948514.17084,predicted,High immigration,capital
+2038,29461940425.710743,predicted,High immigration,capital
+2043,31820576308.504734,predicted,High immigration,capital
+2048,34152746881.570606,predicted,High immigration,capital
+2053,37010682636.10161,predicted,High immigration,capital
+2058,40776611926.73929,predicted,High immigration,capital
+2063,44233952450.214096,predicted,High immigration,capital
+2068,47659495827.77579,predicted,High immigration,capital
+2073,51520091466.456985,predicted,High immigration,capital
+2000,6717488327.4,observed,,capital
+2001,5936570527.2,observed,,capital
+2002,5994433500.0,observed,,capital
+2003,6054687567.0,observed,,capital
+2004,6603555588.0,observed,,capital
+2005,7274670654.6,observed,,capital
+2006,8010869126.4,observed,,capital
+2007,8617180449.6,observed,,capital
+2008,9073327949.4,observed,,capital
+2009,9086462139.6,observed,,capital
+2010,8709426573.0,observed,,capital
+2011,8593686800.4,observed,,capital
+2012,10140402081.0,observed,,capital
+2013,11354043738.0,observed,,capital
+2014,11199996660.0,observed,,capital
+2015,12028215237.6,observed,,capital
+2016,12791663505.0,observed,,capital
+2017,13470251439.6,observed,,capital
+2018,14230512865.2,observed,,capital
+2019,15851887235.4,observed,,capital
+2020,15848754129.0,observed,,capital
+2021,18826049437.2,observed,,capital
+2022,15273505972.8,observed,,capital
+2023,16925769811.8,observed,,capital
+2023,13581937437.613937,predicted,Median,capital_sensitivity
+2028,16045792155.572025,predicted,Median,capital_sensitivity
+2033,18264591543.33838,predicted,Median,capital_sensitivity
+2038,20189526551.92908,predicted,Median,capital_sensitivity
+2043,21508422641.488132,predicted,Median,capital_sensitivity
+2048,22673099340.42748,predicted,Median,capital_sensitivity
+2053,23960401495.698544,predicted,Median,capital_sensitivity
+2058,25559762087.847294,predicted,Median,capital_sensitivity
+2063,26922714423.162983,predicted,Median,capital_sensitivity
+2068,28103683493.578693,predicted,Median,capital_sensitivity
+2073,29325847604.90453,predicted,Median,capital_sensitivity
+2023,13581937437.613937,predicted,5th percentile,capital_sensitivity
+2028,15593393461.699535,predicted,5th percentile,capital_sensitivity
+2033,17489624285.97945,predicted,5th percentile,capital_sensitivity
+2038,19139607839.598164,predicted,5th percentile,capital_sensitivity
+2043,20098861745.69258,predicted,5th percentile,capital_sensitivity
+2048,20837679218.25973,predicted,5th percentile,capital_sensitivity
+2053,21647719013.333828,predicted,5th percentile,capital_sensitivity
+2058,22711865948.878002,predicted,5th percentile,capital_sensitivity
+2063,23375769005.3026,predicted,5th percentile,capital_sensitivity
+2068,23846272843.865322,predicted,5th percentile,capital_sensitivity
+2073,24301863327.55933,predicted,5th percentile,capital_sensitivity
+2023,13581937437.613937,predicted,25th percentile,capital_sensitivity
+2028,15865017966.585129,predicted,25th percentile,capital_sensitivity
+2033,17909750802.948166,predicted,25th percentile,capital_sensitivity
+2038,19736346137.270966,predicted,25th percentile,capital_sensitivity
+2043,20927042450.65294,predicted,25th percentile,capital_sensitivity
+2048,21923864421.39572,predicted,25th percentile,capital_sensitivity
+2053,22999852604.67058,predicted,25th percentile,capital_sensitivity
+2058,24358234609.670452,predicted,25th percentile,capital_sensitivity
+2063,25470856173.803898,predicted,25th percentile,capital_sensitivity
+2068,26355990182.671,predicted,25th percentile,capital_sensitivity
+2073,27285198565.313595,predicted,25th percentile,capital_sensitivity
+2023,13581937437.613937,predicted,75th percentile,capital_sensitivity
+2028,16227926004.523125,predicted,75th percentile,capital_sensitivity
+2033,18562543095.89151,predicted,75th percentile,capital_sensitivity
+2038,20635690792.58272,predicted,75th percentile,capital_sensitivity
+2043,22124932812.35088,predicted,75th percentile,capital_sensitivity
+2048,23438229513.49072,predicted,75th percentile,capital_sensitivity
+2053,24938488591.933147,predicted,75th percentile,capital_sensitivity
+2058,26778814728.407825,predicted,75th percentile,capital_sensitivity
+2063,28405560612.18279,predicted,75th percentile,capital_sensitivity
+2068,29892311552.703648,predicted,75th percentile,capital_sensitivity
+2073,31458078158.11189,predicted,75th percentile,capital_sensitivity
+2023,13581937437.613937,predicted,95th percentile,capital_sensitivity
+2028,16500296687.712307,predicted,95th percentile,capital_sensitivity
+2033,19024823846.88015,predicted,95th percentile,capital_sensitivity
+2038,21289314945.543728,predicted,95th percentile,capital_sensitivity
+2043,22978692675.96446,predicted,95th percentile,capital_sensitivity
+2048,24549622902.07838,predicted,95th percentile,capital_sensitivity
+2053,26329294645.79881,predicted,95th percentile,capital_sensitivity
+2058,28527134762.731037,predicted,95th percentile,capital_sensitivity
+2063,30601469681.852314,predicted,95th percentile,capital_sensitivity
+2068,32482047690.29243,predicted,95th percentile,capital_sensitivity
+2073,34518372633.95125,predicted,95th percentile,capital_sensitivity
+2023,13581937437.613937,predicted,No immigration,capital_sensitivity
+2028,15628993070.569359,predicted,No immigration,capital_sensitivity
+2033,17286100715.414635,predicted,No immigration,capital_sensitivity
+2038,18676582869.85411,predicted,No immigration,capital_sensitivity
+2043,19420796500.051826,predicted,No immigration,capital_sensitivity
+2048,19931452640.68006,predicted,No immigration,capital_sensitivity
+2053,20437235253.248047,predicted,No immigration,capital_sensitivity
+2058,21077645770.670185,predicted,No immigration,capital_sensitivity
+2063,21299526522.453014,predicted,No immigration,capital_sensitivity
+2068,21253626808.774223,predicted,No immigration,capital_sensitivity
+2073,21108984272.105274,predicted,No immigration,capital_sensitivity
+2023,13581937437.613937,predicted,Cyclic immigration,capital_sensitivity
+2028,16045792155.572025,predicted,Cyclic immigration,capital_sensitivity
+2033,17980960682.669685,predicted,Cyclic immigration,capital_sensitivity
+2038,20165589182.029156,predicted,Cyclic immigration,capital_sensitivity
+2043,21199347445.264606,predicted,Cyclic immigration,capital_sensitivity
+2048,22598149485.79655,predicted,Cyclic immigration,capital_sensitivity
+2053,23586836236.478397,predicted,Cyclic immigration,capital_sensitivity
+2058,25418776503.572056,predicted,Cyclic immigration,capital_sensitivity
+2063,26495002789.602184,predicted,Cyclic immigration,capital_sensitivity
+2068,27887423025.44431,predicted,Cyclic immigration,capital_sensitivity
+2073,28818301489.52708,predicted,Cyclic immigration,capital_sensitivity
+2023,13581937437.613937,predicted,High immigration,capital_sensitivity
+2028,16442974763.926968,predicted,High immigration,capital_sensitivity
+2033,19151322301.17126,predicted,High immigration,capital_sensitivity
+2038,21619896300.00733,predicted,High immigration,capital_sensitivity
+2043,23557178255.056347,predicted,High immigration,capital_sensitivity
+2048,25452768252.155506,predicted,High immigration,capital_sensitivity
+2053,27561446170.382015,predicted,High immigration,capital_sensitivity
+2058,30098118443.122494,predicted,High immigration,capital_sensitivity
+2063,32493170870.82131,predicted,High immigration,capital_sensitivity
+2068,34858239516.389725,predicted,High immigration,capital_sensitivity
+2073,37377631197.34207,predicted,High immigration,capital_sensitivity
+2000,5000463457.8,observed,,capital_sensitivity
+2001,4194922303.8,observed,,capital_sensitivity
+2002,4171898065.2,observed,,capital_sensitivity
+2003,4310516785.8,observed,,capital_sensitivity
+2004,4778485922.4,observed,,capital_sensitivity
+2005,5351376007.2,observed,,capital_sensitivity
+2006,6060721473.0,observed,,capital_sensitivity
+2007,6593971781.4,observed,,capital_sensitivity
+2008,6940811692.8,observed,,capital_sensitivity
+2009,7114218341.4,observed,,capital_sensitivity
+2010,6716993786.4,observed,,capital_sensitivity
+2011,6374149025.4,observed,,capital_sensitivity
+2012,7672607095.2,observed,,capital_sensitivity
+2013,8785644983.4,observed,,capital_sensitivity
+2014,8315600881.8,observed,,capital_sensitivity
+2015,9034806625.2,observed,,capital_sensitivity
+2016,9599020066.2,observed,,capital_sensitivity
+2017,9938832133.2,observed,,capital_sensitivity
+2018,10499514422.4,observed,,capital_sensitivity
+2019,11927218345.8,observed,,capital_sensitivity
+2020,11823656708.4,observed,,capital_sensitivity
+2021,14473980693.6,observed,,capital_sensitivity
+2022,10509344701.2,observed,,capital_sensitivity
+2023,12229068170.4,observed,,capital_sensitivity
+2023,20612972995.20134,predicted,Median,benefits
+2028,25562206899.041832,predicted,Median,benefits
+2033,29928580466.43763,predicted,Median,benefits
+2038,33841102225.46917,predicted,Median,benefits
+2043,36011002984.188484,predicted,Median,benefits
+2048,38019993135.8974,predicted,Median,benefits
+2053,40687457411.16341,predicted,Median,benefits
+2058,44539354608.427,predicted,Median,benefits
+2063,47529988032.75633,predicted,Median,benefits
+2068,49995044844.31459,predicted,Median,benefits
+2073,52860866358.58043,predicted,Median,benefits
+2023,20612972995.20134,predicted,5th percentile,benefits
+2028,25446551413.930244,predicted,5th percentile,benefits
+2033,29553046167.467842,predicted,5th percentile,benefits
+2038,33098764038.570305,predicted,5th percentile,benefits
+2043,34799579230.38074,predicted,5th percentile,benefits
+2048,36240181868.216255,predicted,5th percentile,benefits
+2053,38247609326.50685,predicted,5th percentile,benefits
+2058,41282091834.67704,predicted,5th percentile,benefits
+2063,43354877404.4843,predicted,5th percentile,benefits
+2068,44624668476.88414,predicted,5th percentile,benefits
+2073,46264192992.454636,predicted,5th percentile,benefits
+2023,20612972995.20134,predicted,25th percentile,benefits
+2028,25535467699.822487,predicted,25th percentile,benefits
+2033,29739470863.198853,predicted,25th percentile,benefits
+2038,33517211450.635544,predicted,25th percentile,benefits
+2043,35519295455.20647,predicted,25th percentile,benefits
+2048,37296951648.78277,predicted,25th percentile,benefits
+2053,39701636201.85143,predicted,25th percentile,benefits
+2058,43263431281.22795,predicted,25th percentile,benefits
+2063,45855967305.444595,predicted,25th percentile,benefits
+2068,47822760345.5858,predicted,25th percentile,benefits
+2073,50191723269.61208,predicted,25th percentile,benefits
+2023,20612972995.20134,predicted,75th percentile,benefits
+2028,25622397296.583557,predicted,75th percentile,benefits
+2033,30051575564.09765,predicted,75th percentile,benefits
+2038,34128265127.40458,predicted,75th percentile,benefits
+2043,36496426814.191536,predicted,75th percentile,benefits
+2048,38740740167.89935,predicted,75th percentile,benefits
+2053,41738046096.437965,predicted,75th percentile,benefits
+2058,45912848612.022766,predicted,75th percentile,benefits
+2063,49330455986.78599,predicted,75th percentile,benefits
+2068,52258630023.787994,predicted,75th percentile,benefits
+2073,55716308155.89941,predicted,75th percentile,benefits
+2023,20612972995.20134,predicted,95th percentile,benefits
+2028,25671934375.151337,predicted,95th percentile,benefits
+2033,30256966917.171898,predicted,95th percentile,benefits
+2038,34524086022.55572,predicted,95th percentile,benefits
+2043,37190328477.30807,predicted,95th percentile,benefits
+2048,39792397038.95306,predicted,95th percentile,benefits
+2053,43244063404.16902,predicted,95th percentile,benefits
+2058,47839591850.45794,predicted,95th percentile,benefits
+2063,51809987685.95791,predicted,95th percentile,benefits
+2068,55431343325.46525,predicted,95th percentile,benefits
+2073,59574639061.27538,predicted,95th percentile,benefits
+2023,20612972995.20134,predicted,No immigration,benefits
+2028,25361625206.31141,predicted,No immigration,benefits
+2033,29390048342.83001,predicted,No immigration,benefits
+2038,33060532741.173134,predicted,No immigration,benefits
+2043,35022369717.14208,predicted,No immigration,benefits
+2048,36762635859.45446,predicted,No immigration,benefits
+2053,38935126277.711136,predicted,No immigration,benefits
+2058,41764810082.43553,predicted,No immigration,benefits
+2063,43138101016.27605,predicted,No immigration,benefits
+2068,43687093627.07738,predicted,No immigration,benefits
+2073,44174752153.5718,predicted,No immigration,benefits
+2023,20612972995.20134,predicted,Cyclic immigration,benefits
+2028,25562206899.041832,predicted,Cyclic immigration,benefits
+2033,29825521293.344986,predicted,Cyclic immigration,benefits
+2038,33807312495.99829,predicted,Cyclic immigration,benefits
+2043,35874709650.58291,predicted,Cyclic immigration,benefits
+2048,37888116359.20965,predicted,Cyclic immigration,benefits
+2053,40454917120.50331,predicted,Cyclic immigration,benefits
+2058,44277007686.99254,predicted,Cyclic immigration,benefits
+2063,47132494334.72454,predicted,Cyclic immigration,benefits
+2068,49468026180.51012,predicted,Cyclic immigration,benefits
+2073,52165588868.40232,predicted,Cyclic immigration,benefits
+2023,20612972995.20134,predicted,High immigration,benefits
+2028,25699956884.015327,predicted,High immigration,benefits
+2033,30239163218.87622,predicted,High immigration,benefits
+2038,34424643639.75095,predicted,High immigration,benefits
+2043,36997800174.45361,predicted,High immigration,benefits
+2048,39570712087.20397,predicted,High immigration,benefits
+2053,43031174912.419136,predicted,High immigration,benefits
+2058,47938382145.49908,predicted,High immigration,benefits
+2063,52349274443.04017,predicted,High immigration,benefits
+2068,56730176087.204056,predicted,High immigration,benefits
+2073,61874852662.31338,predicted,High immigration,benefits
+2000,6095955305.4,observed,,benefits
+2001,6383842569.6,observed,,benefits
+2002,6645753728.4,observed,,benefits
+2003,6833354355.0,observed,,benefits
+2004,7114803643.8,observed,,benefits
+2005,7295104275.0,observed,,benefits
+2006,7597482874.2,observed,,benefits
+2007,8008495329.6,observed,,benefits
+2008,8543278434.6,observed,,benefits
+2009,9315216201.0,observed,,benefits
+2010,9733463689.8,observed,,benefits
+2011,10249013418.6,observed,,benefits
+2012,10947498229.8,observed,,benefits
+2013,11575461229.2,observed,,benefits
+2014,12183498790.2,observed,,benefits
+2015,12877783626.0,observed,,benefits
+2016,14538211888.8,observed,,benefits
+2017,14305770172.2,observed,,benefits
+2018,14933741611.8,observed,,benefits
+2019,15838639428.6,observed,,benefits
+2020,17443716162.0,observed,,benefits
+2021,18363723256.2,observed,,benefits
+2022,19685395590.0,observed,,benefits
+2023,21547903905.0,observed,,benefits
+2023,80577875303.15561,predicted,Median,total
+2028,98214373836.9725,predicted,Median,total
+2033,113925974068.63126,predicted,Median,total
+2038,127844001632.36755,predicted,Median,total
+2043,136277278724.17487,predicted,Median,total
+2048,143936413389.81665,predicted,Median,total
+2053,153368557166.84406,predicted,Median,total
+2058,166247265154.43204,predicted,Median,total
+2063,176573282044.06824,predicted,Median,total
+2068,185249027037.59808,predicted,Median,total
+2073,194927778854.69424,predicted,Median,total
+2023,80577875303.15561,predicted,5th percentile,total
+2028,96638023942.67776,predicted,5th percentile,total
+2033,110802564903.54327,predicted,5th percentile,total
+2038,123061199402.86841,predicted,5th percentile,total
+2043,129396965371.44156,predicted,5th percentile,total
+2048,134558843588.71487,predicted,5th percentile,total
+2053,141162307060.2988,predicted,5th percentile,total
+2058,150711600670.43195,predicted,5th percentile,total
+2063,157038062260.7457,predicted,5th percentile,total
+2068,161050116370.6715,predicted,5th percentile,total
+2073,165837853636.66025,predicted,5th percentile,total
+2023,80577875303.15561,predicted,25th percentile,total
+2028,97625187946.53024,predicted,25th percentile,total
+2033,112465714570.64456,predicted,25th percentile,total
+2038,125773123447.0683,predicted,25th percentile,total
+2043,133452752138.65543,predicted,25th percentile,total
+2048,140117659083.15344,predicted,25th percentile,total
+2053,148364113010.54678,predicted,25th percentile,total
+2058,159923521112.54575,predicted,25th percentile,total
+2063,168646585939.59628,predicted,25th percentile,total
+2068,175373492470.9283,predicted,25th percentile,total
+2073,183116280894.54105,predicted,25th percentile,total
+2023,80577875303.15561,predicted,75th percentile,total
+2028,98882129986.10434,predicted,75th percentile,total
+2033,115082788223.0364,predicted,75th percentile,total
+2038,129807118001.13275,predicted,75th percentile,total
+2043,139174147071.6826,predicted,75th percentile,total
+2048,147798250457.08673,predicted,75th percentile,total
+2053,158574337027.33572,predicted,75th percentile,total
+2058,172847535532.30457,predicted,75th percentile,total
+2063,184869946894.9572,predicted,75th percentile,total
+2068,195446610766.24326,predicted,75th percentile,total
+2073,207406458760.45456,predicted,75th percentile,total
+2023,80577875303.15561,predicted,95th percentile,total
+2028,99787418677.81989,predicted,95th percentile,total
+2033,116907345072.52747,predicted,95th percentile,total
+2038,132630562877.1098,predicted,95th percentile,total
+2043,143260184461.46286,predicted,95th percentile,total
+2048,153418317615.13083,predicted,95th percentile,total
+2053,166005888684.58594,predicted,95th percentile,total
+2058,182254789321.399,predicted,95th percentile,total
+2063,196787370412.11865,predicted,95th percentile,total
+2068,210049594028.86627,predicted,95th percentile,total
+2073,224879550771.75974,predicted,95th percentile,total
+2023,80577875303.15561,predicted,No immigration,total
+2028,96585352193.1047,predicted,No immigration,total
+2033,109939892594.00958,predicted,No immigration,total
+2038,121776229979.16019,predicted,No immigration,total
+2043,128090438773.99548,predicted,No immigration,total
+2048,133291051664.77469,predicted,No immigration,total
+2053,139426857466.159,predicted,No immigration,total
+2058,147362747669.2175,predicted,No immigration,total
+2063,150932453843.84467,predicted,No immigration,total
+2068,151953738001.89148,predicted,No immigration,total
+2073,152576691623.49536,predicted,No immigration,total
+2023,80577875303.15561,predicted,Cyclic immigration,total
+2028,98214373836.9725,predicted,Cyclic immigration,total
+2033,112882341849.07608,predicted,Cyclic immigration,total
+2038,127699961550.73575,predicted,Cyclic immigration,total
+2043,135088379505.99414,predicted,Cyclic immigration,total
+2048,143437450064.55142,predicted,Cyclic immigration,total
+2053,151796543833.9861,predicted,Cyclic immigration,total
+2058,165282422933.0138,predicted,Cyclic immigration,total
+2063,174489390213.67514,predicted,Cyclic immigration,total
+2068,183493367269.18604,predicted,Cyclic immigration,total
+2073,191967850861.84396,predicted,Cyclic immigration,total
+2023,80577875303.15561,predicted,High immigration,total
+2028,99661783298.88062,predicted,High immigration,total
+2033,117166493904.24237,predicted,High immigration,total
+2038,133252527396.95044,predicted,High immigration,total
+2043,144343503304.37637,predicted,High immigration,total
+2048,155314600626.99048,predicted,High immigration,total
+2053,168806784060.9143,predicted,High immigration,total
+2058,186638961438.09943,predicted,High immigration,total
+2063,202986687863.4184,predicted,High immigration,total
+2068,219194091407.52548,predicted,High immigration,total
+2073,237514213538.4902,predicted,High immigration,total
+2000,21985651251.0,observed,,total
+2001,21857487202.8,observed,,total
+2002,23014988809.8,observed,,total
+2003,24050450488.8,observed,,total
+2004,25864561717.8,observed,,total
+2005,27707413460.4,observed,,total
+2006,29831573427.0,observed,,total
+2007,31858700368.8,observed,,total
+2008,34050492456.6,observed,,total
+2009,35936932488.6,observed,,total
+2010,36385688881.2,observed,,total
+2011,37774301241.6,observed,,total
+2012,41464167674.4,observed,,total
+2013,44540756769.6,observed,,total
+2014,46261191269.4,observed,,total
+2015,49271884642.2,observed,,total
+2016,52847339284.2,observed,,total
+2017,55081894269.6,observed,,total
+2018,58382311348.2,observed,,total
+2019,62982605466.6,observed,,total
+2020,67434930906.6,observed,,total
+2021,73632296880.0,observed,,total
+2022,74544359279.4,observed,,total
+2023,81576154743.0,observed,,total

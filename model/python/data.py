@@ -1,64 +1,58 @@
-from pandas import read_excel, merge, pivot
+from pandas import read_excel, merge, concat
 from numpy import nan as numpy_nan
-
-
-DATA_PATH = "/Users/sijinzhang/Github/income_view/etc/data_to_check - without_raw_data - v3.0.xlsx"
-DATA_PATH2 = "/Users/sijinzhang/Github/income_view/etc/national-population-projections-2022base-2073.xlsx"
+from constant import DATA_PATH, DATA_PATH2, BILLION_CONVERTER
 
 
 
-def get_proj_data(year, scaler) {
+def get_proj_data(senario = "Median", base_year: int = 2023):
   # Read Excel files from different sheets
-    df_value_less_15 = pd.read_excel(DATA_PATH2, sheet_name="<15", skiprows=1)
-    df_value_15_39 = pd.read_excel(DATA_PATH2, sheet_name="15-39", skiprows=1)
-    df_value_40_64 = pd.read_excel(DATA_PATH2, sheet_name="40-64", skiprows=1)
-    df_value_65_above = pd.read_excel(DATA_PATH2, sheet_name="65+", skiprows=1)
+    if senario == "Median":
+        colname = "50th\n(Median)"
+    elif senario == "5th percentile":
+        colname = "5th"
+    elif senario == "25th percentile":
+        colname = "25th"
+    elif senario == "75th percentile":
+        colname = "75th"
+    elif senario == "95th percentile":
+        colname = "95th"
+    elif senario == "No immigration":
+        colname = "No\nmigration\n(4)(5)"
+    elif senario == "Cyclic immigration":
+        colname = "Cyclic\nmigration\n(4)(6)"
+    elif senario == "High immigration":
+        colname = "Very high\nmigration\n(4)(7)"
 
-    # Select relevant columns
-    df_value_less_15 = df_value_less_15.iloc[:, [0, df_value_less_15.columns.get_loc("50th\n(Median)")]]
-    df_value_15_39 = df_value_15_39.iloc[:, [0, df_value_15_39.columns.get_loc("50th\n(Median)")]]
-    df_value_40_64 = df_value_40_64.iloc[:, [0, df_value_40_64.columns.get_loc("50th\n(Median)")]]
-    df_value_65_above = df_value_65_above.iloc[:, [0, df_value_65_above.columns.get_loc("50th\n(Median)")]]
+    df_value = {}
+    for proc_age in ["<15", "15-39", "40-64", "65+"]:
+        df_value[proc_age] = read_excel(DATA_PATH2, sheet_name=proc_age, skiprows=1)
+        df_value[proc_age] = df_value[proc_age].iloc[:, [0, df_value[proc_age].columns.get_loc(colname)]]
+        df_value[proc_age] = df_value[proc_age].rename(columns = {
+            "Unnamed: 0": "year",
+            colname: "count"
+        })
 
-    # Add age column to each DataFrame
-    df0 = df_value_less_15.assign(age="<15")
-    df1 = df_value_15_39.assign(age="15-39")
-    df2 = df_value_40_64.assign(age="40-64")
-    df3 = df_value_65_above.assign(age=">65")
+    df_value["15-64"] = merge(
+        df_value["15-39"][["year", "count"]], 
+        df_value["40-64"][["year", "count"]], on="year", how='inner', suffixes=('_df1', '_df2'))
+    
+    # Add X columns from df1 and df2
+    df_value["15-64"]["count"] = df_value["15-64"]["count_df1"] + df_value["15-64"]["count_df2"]
+    
+    # Select only Y and the new X column
+    df_value["15-64"] = df_value["15-64"][["year", "count"]]
 
-    # Concatenate DataFrames
-    df = pd.concat([df0, df1, df2, df3], ignore_index=True)
+    df_incre = {}
+    for proc_age in ["<15", "15-64", "65+"]:
+        base_count = df_value[proc_age].loc[df_value[proc_age]['year'] == base_year, 'count'].iloc[0]
+        df_incre[proc_age] = 1.0 + (df_value[proc_age]["count"] - base_count) / base_count
 
-    # Rename columns
-    df = df.rename(columns={
-        "50th\n(Median)": "count",
-        df.columns[0]: "year"
-    })
+    df_incre = concat(df_incre, axis=1)
+    df_incre["year"] = df_value["15-64"]["year"]
 
-    # Scale count by 1000
-    df["count"] = df["count"] * 1000.0
+    df_incre = df_incre.rename(columns={"65+": ">65"})
 
-    # Filter by specified year
-    df = df[df["year"] == year]
-
-    print(" - Prepare training dataset (onehot encoding for age) ...")
-    # One-hot encode age
-    encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
-    age_encoded = encoder.fit_transform(df[["age"]])
-    age_encoded = pd.DataFrame(age_encoded, columns=encoder.get_feature_names_out(['age']))
-
-    # Normalize count
-    scaler_max = scaler["max"]
-    count_scaled = df["count"] / scaler_max
-
-    print(" - Prepare training dataset (x and y) ...")
-    # Add scaled count to encoded age DataFrame
-    age_encoded["count"] = count_scaled.values
-
-    x = age_encoded
-
-    return x
-}
+    return df_incre
 
 
 def get_input_data(map_new_age: bool =True, income_type: str = "total"):
@@ -136,4 +130,4 @@ def get_input_data(map_new_age: bool =True, income_type: str = "total"):
             df_all[age_group] = df_all[age_group] / scaler_max
 
     
-    return {"data": df_all, "scaler_max": scaler_max}
+    return df_all
