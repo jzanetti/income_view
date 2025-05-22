@@ -1,6 +1,33 @@
-from pandas import read_excel, merge, concat
+from pandas import read_excel, merge, concat, read_csv, to_numeric
 from numpy import nan as numpy_nan
-from constant import DATA_PATH, DATA_PATH2, BILLION_CONVERTER
+from constant import DATA_PATH, DATA_PATH2, DATA_PATH3, DATA_PATH4
+from numpy import isnan as numpy_isnan
+from numpy import logical_and
+
+def get_oecd_data():
+    df = read_csv(DATA_PATH3)
+    df = df[df["Country"] == "New Zealand"]
+    df["name"] = df["Indicator"] + ": " + df["Subject"] + ":" + df["Measure"]
+
+    all_names = {}
+    for proc_year in range(2000, 2023):
+        proc_df = df[df["TIME_PERIOD"] == proc_year]
+        proc_df = proc_df[(proc_df["OBS_VALUE"] != 0.0) & (numpy_isnan(proc_df["OBS_VALUE"]) == False)]
+        all_names[proc_year] = proc_df["name"].unique()
+
+    all_names_values = [set(values) for values in all_names.values()]
+    all_names_values = set.intersection(*all_names_values)
+
+    df = df[df["name"].isin(list(all_names_values))]
+
+    df = df.rename(columns = {
+        "OBS_VALUE": "value",
+        "TIME_PERIOD": "year"
+    })
+
+    pivoted_df = df.pivot(index='year', columns='name', values='value')
+    return pivoted_df
+
 
 
 
@@ -55,7 +82,7 @@ def get_proj_data(senario = "Median", base_year: int = 2023):
     return df_incre
 
 
-def get_input_data(map_new_age: bool =True, income_type: str = "total"):
+def get_input_data(map_new_age: bool =True, income_type: str = "total", apply_scaler: bool = True):
     # Read Excel files
     df_value = read_excel(DATA_PATH, sheet_name="data", skiprows=1)
     df_count = read_excel(DATA_PATH, sheet_name="data2", skiprows=1)
@@ -124,10 +151,11 @@ def get_input_data(map_new_age: bool =True, income_type: str = "total"):
 
         df_all = df_all[["year", "<15", "15-64", ">65", "all_income"]]
 
-        scaler_max = 3.0 * max(df_all[["<15", "15-64", ">65"]].max())
+        if apply_scaler:
+            scaler_max = 3.0 * max(df_all[["<15", "15-64", ">65"]].max())
 
-        for age_group in ["<15", "15-64", ">65"]:
-            df_all[age_group] = df_all[age_group] / scaler_max
+            for age_group in ["<15", "15-64", ">65"]:
+                df_all[age_group] = df_all[age_group] / scaler_max
 
     
     return df_all

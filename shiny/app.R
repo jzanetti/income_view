@@ -5,15 +5,24 @@ library(readxl)
 library(dplyr)
 library(shinyjs)
 library(DT) 
+library(tidyr)
+library(dplyr)
 
 billion_converter <- 1000000000.0
 million_converter <- 1000000.0
 
 data_path <- "data_to_check - without_raw_data - v3.0.xlsx"
 proj_path <- "income_proj.csv"
+pop_scaler_path <- "scaled_pop.csv"
+cpi_scaler_path <- "scaled_cpi.csv"
 
 df_all <- read_excel(data_path, sheet = "data", skip = 1)
 df_proj <- read.csv(proj_path)
+df_pop_scaler <- read.csv(pop_scaler_path)[, c("year", "age", "count")]
+df_cpi_scaler <- read.csv(cpi_scaler_path)[, c("year", "scaled_cpi")]
+
+df_cpi_scaler <- df_cpi_scaler %>%
+  filter(year >= 2000, year <= 2023)
 
 df_all <- df_all %>%
   rename(
@@ -25,6 +34,52 @@ df_all <- df_all %>%
   )
 
 df_all <- df_all[, c("year", "name", "age", "value1", "value2")]
+
+df_all <- df_all %>%
+  left_join(select(df_pop_scaler, year, age, count), by = c("year", "age")) %>%
+  mutate(value1_pop_scaled = value1 / count) %>%
+  select(-count)
+
+df_all <- df_all %>%
+  left_join(select(df_cpi_scaler, year, scaled_cpi), by = c("year")) %>%
+  mutate(value1_cpi_scaled = value1 / scaled_cpi) %>%
+  select(-scaled_cpi)
+
+joint_scaler <- df_pop_scaler %>%
+  left_join(select(df_cpi_scaler, year, scaled_cpi), by = "year") %>%
+  mutate(pop_cpi_scaler = count * scaled_cpi) %>%
+  select(-scaled_cpi) %>%
+  select(-count)
+
+df_all <- df_all %>%
+  left_join(select(joint_scaler, year, age, pop_cpi_scaler), by = c("year", "age")) %>%
+  mutate(value1_pop_cpi_scaled = value1 / pop_cpi_scaler) %>%
+  select(-pop_cpi_scaler)
+
+df_all <- df_all %>%
+  # Pivot the value1-related columns into long format
+  pivot_longer(
+    cols = c(value1, value1_pop_scaled, value1_cpi_scaled, value1_pop_cpi_scaled),
+    names_to = "scaler",
+    values_to = "value1_temp"
+  ) %>%
+  # Rename scaler values and handle value2's scaler
+  mutate(
+    scaler = case_when(
+      scaler == "value1" ~ "No Scaler",
+      scaler == "value1_pop_scaled" ~ "Population Scaler",
+      scaler == "value1_cpi_scaled" ~ "CPI Scaler",
+      scaler == "value1_pop_cpi_scaled" ~ "Pop + CPI Scaler"
+    )
+  ) %>%
+  rename(value1 = value1_temp)
+
+df_all <- df_all %>%
+  mutate(value2 = if_else(
+    scaler %in% c("Population Scaler", "CPI Scaler", "Pop + CPI Scaler"), 
+    NA, 
+    value2))
+
 
 ui <- fluidPage(
   useShinyjs(),
@@ -47,12 +102,17 @@ ui <- fluidPage(
                        "mean"
                      ),
                      selected = "total"),
+        checkboxGroupInput(
+          "age", "Select age: ",
+          choices = unique(df_all$age),
+          selected = "all"
+        ),
         radioButtons("sensitivity", "Select sensitivity",
                      choices = c(TRUE, FALSE), 
                      selected = FALSE),
         uiOutput("add_name"),
-        uiOutput("add_age"),
         uiOutput("add_unit"),
+        uiOutput("add_scaler"),
         uiOutput("use_norm"),
         width = 2
       ),
@@ -107,6 +167,9 @@ ui <- fluidPage(
   # Tab 3: data download
   tabPanel(
     title = "Data download",
+    selectInput("dataset_choice", "Choose dataset:",
+                choices = c("Income Data", "Population structure projection (Stats NZ)"),
+                selected = "Income Data"),
     DTOutput("table"),
     downloadButton("download_csv", "Download as CSV")
   )
@@ -115,13 +178,21 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-
+  
+  # Reactive expression to return the selected dataset
+  selected_data <- reactive({
+    # Replace these with your actual data frames or data processing
+    if (input$dataset_choice == "Income Data") {
+      df <- df_all[, c("year", "name", "age", "value1")] %>% 
+        rename("income" = "value1")
+    } else if (input$dataset_choice == "Population structure projection (Stats NZ)") {
+      df <- df_proj
+    } 
+    return(df)
+  })
   
   output$table <- renderDT({ 
-    
-    df <- df_all[, c("year", "name", "age", "value1")] %>% 
-      rename("income" = "value1")
-    datatable(df, options = list(pageLength = 10, autoWidth = TRUE)) 
+    datatable(selected_data(), options = list(pageLength = 10, autoWidth = TRUE)) 
     }
   )
   
@@ -210,23 +281,17 @@ server <- function(input, output, session) {
                    selected = "labour"
                    )}
     })
-    
-  output$add_age <- renderUI({
-    if (input$plot_type == "income timeseries") {
+
+  output$add_scaler <- renderUI({
+    if ((input$plot_type == "income timeseries" & input$value_type == "total")) {
       checkboxGroupInput(
-        "age", "Select age: ",
-        choices = unique(df_all$age),
-        selected = "all"
-      )
-    }
-    else if (input$plot_type == "income percentage") {
-      radioButtons("age", "Select age: ",
-                   choices = unique(df_all$age),
-                   selected = "all"
+        "scaler", "Select scaler: ",
+        choices = c("No Scaler", "Population Scaler", "CPI Scaler", "Pop + CPI Scaler"),
+        selected = "No Scaler"
       )
     }
   })
-
+  
   output$add_unit <- renderUI({
     if (input$plot_type == "income timeseries") {
       radioButtons(
@@ -266,7 +331,8 @@ server <- function(input, output, session) {
       req(input$age)
       req(input$unit)
       req(input$norm)
-
+      req(input$scaler)
+      
       input_name <- input$name
       if(input$sensitivity == "TRUE"){
         if ("labour" %in% input$name) {
@@ -278,9 +344,9 @@ server <- function(input, output, session) {
       }
       
       filtered_data <- df %>% filter(
-        age %in% input$age, name %in% input_name
+        age %in% input$age, scaler %in% input$scaler, name %in% input_name
       )
-      
+
       if (input$unit == "billion") {
         filtered_data$value <- filtered_data$value / billion_converter
       }
@@ -294,10 +360,10 @@ server <- function(input, output, session) {
           mutate(value = (value - min(value)) / (max(value) - min(value))) %>%
           ungroup()
       }
-      
-      ggplot(filtered_data, aes(x = year, y = value, color = interaction(name, age))) + 
+
+      ggplot(filtered_data, aes(x = year, y = value, color = interaction(name, age, scaler))) + 
         geom_line() +
-        labs(title = "Time Series", x = "Year", y = "Value", color = "Name and Age") +
+        labs(title = "Time Series", x = "Year", y = "Value", color = "Name, Age and Scaler") +
         theme_minimal(base_size = 15) +
         theme(
           plot.background = element_rect(fill = "white", color = NA),
@@ -355,7 +421,7 @@ server <- function(input, output, session) {
       }
       
       filtered_data <- df %>% filter(
-        age != "all", name %in% input_name) %>%
+        age %in% input$age, name %in% input_name) %>%
         group_by(year, name, age) %>%
         summarise(total_value = sum(value), .groups = "drop") %>%
         group_by(year, name) %>%
