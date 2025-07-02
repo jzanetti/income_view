@@ -64,25 +64,82 @@ df_all$value <- df_all$value1
 # <><><><><><><><><><><><><><><><>
 # Figure 1
 # <><><><><><><><><><><><><><><><>
+
 df_processed <- df_all %>%
   # Filter for 'total' name category
-  filter(name == "total") %>%
+  # filter(name == "total") %>%
+  filter(name %in% c("labour", "capital")) %>%
   # Group by year to calculate total income for age > 55 and all ages
   group_by(year) %>%
   summarise(
     income_over_55 = sum(value[age %in% c("55-65", "65-70", ">=70")], na.rm = TRUE),
-    income_all = sum(value, na.rm = TRUE)
+    income_all = sum(value[age %in% c("all")], na.rm = TRUE)
   ) %>%
   # Calculate percentage
   mutate(percentage = (income_over_55 / income_all) * 100)
+
+
+
+df_processed2 <- df_all %>%
+  # Filter for 'total' name category
+  # filter(name == "total") %>%
+  filter(name %in% c("labour", "capital")) %>%
+  # Group by year to calculate total income for age > 55 and all ages
+  group_by(year) %>%
+  summarise(
+    income_55_65 = sum(value[age %in% c("55-65")], na.rm = TRUE),
+    income_65_70 = sum(value[age %in% c("65-70")], na.rm = TRUE),
+    income_over_70 = sum(value[age %in% c(">=70")], na.rm = TRUE),
+    income_all = sum(value[age %in% c("all")], na.rm = TRUE)
+  ) %>%
+  # Calculate percentage
+  mutate(
+    percentage_55_65 = (income_55_65 / income_all) * 100,
+    percentage_65_70= (income_65_70 / income_all) * 100,
+    percentage_over_70 = (income_over_70 / income_all) * 100
+    )
+
+df_processed2 <- tidyr::pivot_longer(df_processed2, 
+                               cols = c(percentage_55_65, percentage_65_70, percentage_over_70), 
+                               names_to = "Percentage_Type", 
+                               values_to = "Percentage")
+
+p2 <- ggplot(df_processed2, aes(x = year, y = Percentage, color = Percentage_Type)) +
+  geom_line() +
+  geom_point() +  # Optional: add points for clarity
+  labs(title = "Share of Personal Income (labour + capital)\nfor different age groups",
+       x = "Year",
+       y = "Percentage of Taxable Income (%)",
+       color = "Data Type") +
+  scale_color_discrete(
+    labels = c("percentage_55_65" = "Age: 55 - 65", 
+               "percentage_65_70" = "Age: 65 - 70",
+               "percentage_over_70" = "Age: >=70")) +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "white"),
+    plot.background = element_rect(fill = "white"),
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1),
+    panel.grid.major = element_line(color = "#D3D3D3", linewidth = 0.5),
+    panel.grid.minor = element_line(color = "#E8ECEF", linewidth = 0.25),
+    text = element_text(family = "Arial", color = "black"),
+    plot.title = element_text(size = 18, face = "bold", hjust = 0),   # Increased title size
+    axis.title = element_text(size = 16, face = "bold"),               # Increased axis title size
+    axis.text = element_text(size = 14),                               # Increased axis text size
+    plot.margin = margin(10, 10, 10, 10)
+  )
+
+  
+  
+ggsave("etc/paper/taxable_income_plot_share2.png", plot = p2, width = 8, height = 6, dpi = 300)
 
 
 p <- ggplot(df_processed, aes(x = year, y = percentage)) +
   geom_line(linewidth = 1.2, color = "#4F81BD") +
   # geom_point(size = 3, color = "#4F81BD") +
   labs(
-    title = "Share of Total Taxable Income for Age >=55 by Year",
-    y = "Percentage of Total Taxable Income (%)",
+    title = "Share of Taxable Income (labour + capital) for Age >=55",
+    y = "Percentage of Taxable Income (%)",
     x = "Year"
   ) +
   theme(
@@ -304,7 +361,7 @@ ggsave("etc/paper/growth.png", plot = p, width = 8, height = 6, dpi = 300)
 base_year <- 2002
 age_range <- c("<15", "15-25", "25-35", "35-45", "45-55", "55-65", ">=65")
 # age_range <- c("55-65", "65-70", ">=70")
-var <- "capital"
+var <- "labour"
 
 df_value1 <- df_all[, c("year", "name", "age", "value")]
 df_value1 <- df_value1 %>%
@@ -375,8 +432,11 @@ all_results <- bind_rows(all_results)
 all_results <- all_results %>%
   left_join(df_value1_share, by = "year")
 
+
+
 all_results <- all_results %>%
-  pivot_longer(cols = c(percentage_fixed, percentage), 
+  pivot_longer(# cols = c(percentage_fixed, percentage), 
+               cols = c(percentage), 
                names_to = "type", 
                values_to = "percentage")
 
@@ -462,7 +522,7 @@ p<-ggplot(data = df_long, aes(x = year, y = value, color = type)) +
     labels = c("percentage" = "Labour / (Labour + Capital)", 
                "percentage2" = "Labour / (Labour + Capital + Trustee + Company)"
                )  # Customize legend labels
-  )+
+  ) +
   scale_y_continuous(limits = c(56, NA))+
   theme(
     panel.background = element_rect(fill = "white"),
