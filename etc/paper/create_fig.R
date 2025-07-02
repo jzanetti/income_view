@@ -2,8 +2,11 @@ library(readxl)
 library(dplyr) 
 library(tidyr)
 library(ggplot2)
-data_path <- "shiny/data_to_check - without_raw_data - v3.0.xlsx"
+library(writexl)
+# data_path <- "shiny/data_to_check - without_raw_data - v3.0.xlsx"
+data_path <- "etc/data_to_check - to_release - no percentage.xlsx"
 data_path2 <- "etc/Companies and trust income statistics.xlsx"
+use_sensitivity <- TRUE
 
 df_all <- read_excel(data_path, sheet = "data", skip = 1)
 df_count <- read_excel(data_path, sheet = "data2", skip = 1)
@@ -61,14 +64,22 @@ df_all$value1 <- as.numeric(df_all$value1, na.rm=TRUE)
 df_all$value2 <- as.numeric(df_all$value2, na.rm=TRUE)
 df_all$value <- df_all$value1
 
+
+if (use_sensitivity == TRUE) {
+  labour_name <- "labour_sensitivity"
+  capital_name <- "capital_sensitivity"
+} else {
+  labour_name <- "labour"
+  capital_name <- capital_name
+}
+
 # <><><><><><><><><><><><><><><><>
 # Figure 1
 # <><><><><><><><><><><><><><><><>
-
-df_processed <- df_all %>%
+df_fig1_processed <- df_all %>%
   # Filter for 'total' name category
   # filter(name == "total") %>%
-  filter(name %in% c("labour", "capital")) %>%
+  filter(name %in% c(labour_name, capital_name)) %>%
   # Group by year to calculate total income for age > 55 and all ages
   group_by(year) %>%
   summarise(
@@ -79,11 +90,10 @@ df_processed <- df_all %>%
   mutate(percentage = (income_over_55 / income_all) * 100)
 
 
-
-df_processed2 <- df_all %>%
+df_fig1_processed2 <- df_all %>%
   # Filter for 'total' name category
   # filter(name == "total") %>%
-  filter(name %in% c("labour", "capital")) %>%
+  filter(name %in% c(labour_name, capital_name)) %>%
   # Group by year to calculate total income for age > 55 and all ages
   group_by(year) %>%
   summarise(
@@ -99,12 +109,12 @@ df_processed2 <- df_all %>%
     percentage_over_70 = (income_over_70 / income_all) * 100
     )
 
-df_processed2 <- tidyr::pivot_longer(df_processed2, 
+df_fig1_processed2 <- tidyr::pivot_longer(df_fig1_processed2, 
                                cols = c(percentage_55_65, percentage_65_70, percentage_over_70), 
                                names_to = "Percentage_Type", 
                                values_to = "Percentage")
 
-p2 <- ggplot(df_processed2, aes(x = year, y = Percentage, color = Percentage_Type)) +
+p2 <- ggplot(df_fig1_processed2, aes(x = year, y = Percentage, color = Percentage_Type)) +
   geom_line() +
   geom_point() +  # Optional: add points for clarity
   labs(title = "Share of Personal Income (labour + capital)\nfor different age groups",
@@ -129,12 +139,10 @@ p2 <- ggplot(df_processed2, aes(x = year, y = Percentage, color = Percentage_Typ
     plot.margin = margin(10, 10, 10, 10)
   )
 
-  
-  
 ggsave("etc/paper/taxable_income_plot_share2.png", plot = p2, width = 8, height = 6, dpi = 300)
 
 
-p <- ggplot(df_processed, aes(x = year, y = percentage)) +
+p <- ggplot(df_fig1_processed, aes(x = year, y = percentage)) +
   geom_line(linewidth = 1.2, color = "#4F81BD") +
   # geom_point(size = 3, color = "#4F81BD") +
   labs(
@@ -165,39 +173,39 @@ ggsave("etc/paper/taxable_income_plot_share.png", plot = p, width = 8, height = 
 age_order <- c("15-25", "25-35", "35-45", "45-55", "55-65", "65-70", ">=70")
 # Process the data
 
-df_processed <- df_all %>%
+df_fig2_processed <- df_all %>%
   # Filter for capital and total
-  filter(name %in% c("capital", "labour"), year == 2023) %>%
+  filter(name %in% c(capital_name, labour_name), year == 2023) %>%
   # Group by age and name, summing value1 across all years
   group_by(age, name) %>%
   summarise(value = sum(value, na.rm = TRUE)) %>%
   # Pivot to get capital and total in separate columns
   tidyr::pivot_wider(names_from = name, values_from = value) %>%
   # Calculate percentage
-  mutate(percentage = (capital / (labour + capital)) * 100) %>%
+  mutate(percentage = (!!sym(capital_name) / (!!sym(labour_name) + !!sym(capital_name))) * 100) %>%
   # Filter for relevant age groups (excluding "all" for bars)
   filter(age %in% age_order) %>%
   # Set age as factor with specified order
   mutate(age = factor(age, levels = age_order))
 
 all_percentage <- df_all %>%
-  filter(name %in% c("capital", "labour"), year == 2023, age == "all") %>%
+  filter(name %in% c(capital_name, labour_name), year == 2023, age == "all") %>%
   group_by(name) %>%
   summarise(value = sum(value, na.rm = TRUE)) %>%
   tidyr::pivot_wider(names_from = name, values_from = value) %>%
-  mutate(percentage = (capital / (labour + capital)) * 100) %>%
+  mutate(percentage = (!!sym(capital_name) / (!!sym(labour_name) + !!sym(capital_name))) * 100) %>%
   pull(percentage)
 
-df_processed2 <- df_all %>%
+df_fig2_processed2 <- df_all %>%
   # Filter for labour and total
-  filter(name %in% c("capital", "labour"), year == 2023) %>%
+  filter(name %in% c(capital_name, labour_name), year == 2023) %>%
   # Group by age and name, summing value1 across all years
   group_by(age, name) %>%
   summarise(value = sum(value, na.rm = TRUE)) %>%
   # Pivot to get labour and total in separate columns
   tidyr::pivot_wider(names_from = name, values_from = value) %>%
   # Calculate percentage
-  mutate(percentage = (labour / (labour + capital)) * 100) %>%
+  mutate(percentage = (!!sym(labour_name) / (!!sym(labour_name) + !!sym(capital_name))) * 100) %>%
   # Filter for relevant age groups (excluding "all" for bars)
   filter(age %in% age_order) %>%
   # Set age as factor with specified order
@@ -205,15 +213,15 @@ df_processed2 <- df_all %>%
 
 # Extract the percentage for age == "all" for the horizontal line
 all_percentage2 <- df_all %>%
-  filter(name %in% c("capital", "labour"), year == 2023, age == "all") %>%
+  filter(name %in% c(capital_name, labour_name), year == 2023, age == "all") %>%
   group_by(name) %>%
   summarise(value = sum(value, na.rm = TRUE)) %>%
   tidyr::pivot_wider(names_from = name, values_from = value) %>%
-  mutate(percentage = (labour / (labour + capital)) * 100) %>%
+  mutate(percentage = (!!sym(labour_name) / (!!sym(labour_name) + !!sym(capital_name))) * 100) %>%
   pull(percentage)
 
 # Create the bar chart
-p1 <- ggplot(df_processed, aes(x = age, y = percentage)) +
+p1 <- ggplot(df_fig2_processed, aes(x = age, y = percentage)) +
   geom_bar(stat = "identity", fill = "#4F81BD") +
   geom_hline(yintercept = all_percentage, color = "red", linetype = "dashed", linewidth = 1) +
   geom_text(aes(x = Inf, y = all_percentage, label = sprintf("All ages: %.1f%%", all_percentage)),
@@ -239,7 +247,7 @@ p1 <- ggplot(df_processed, aes(x = age, y = percentage)) +
 ggsave("etc/paper/capital_income_plot_share.png", plot = p1, width = 8, height = 6, dpi = 300)
 
 
-p2 <- ggplot(df_processed2, aes(x = age, y = percentage)) +
+p2 <- ggplot(df_fig2_processed2, aes(x = age, y = percentage)) +
   geom_bar(stat = "identity", fill = "#4F81BD") +
   geom_hline(yintercept = all_percentage2, color = "red", linetype = "dashed", linewidth = 1) +
   geom_text(aes(x = Inf, y = all_percentage2, label = sprintf("All ages: %.1f%%", all_percentage2)),
@@ -267,19 +275,19 @@ ggsave("etc/paper/labour_income_plot_share.png", plot = p2, width = 8, height = 
 # <><><><><><><><><><><><><><><><>
 # Figure X (not used)
 # <><><><><><><><><><><><><><><><>
-df_processed <- df_all %>%
+df_figx_processed <- df_all %>%
   filter(age == "all") %>%
   # Filter for labour and total
-  filter(name %in% c("labour", "total")) %>%
+  filter(name %in% c(labour_name, "total")) %>%
   # Group by year and name, summing value1 across all age groups
   group_by(year, name) %>%
   summarise(value = sum(value, na.rm = TRUE)) %>%
   # Pivot to get labour and total in separate columns
   tidyr::pivot_wider(names_from = name, values_from = value) %>%
   # Calculate percentage
-  mutate(percentage = (labour / total) * 100)
+  mutate(percentage = (!!sym(labour_name) / total) * 100)
 
-p <- ggplot(df_processed, aes(x = year, y = percentage)) +
+p <- ggplot(df_figx_processed, aes(x = year, y = percentage)) +
   geom_line(linewidth = 1.2, color = "#4F81BD") +  # Bolder line with Excel-like blue
   # geom_point(size = 3, color = "#4F81BD") +       # Points to match line
   labs(
@@ -308,10 +316,11 @@ ggsave("etc/paper/labour_income_plot_share_all_age.png", plot = p, width = 8, he
 # Define the desired order of age groups
 age_order <- c("15-25", "25-35", "35-45", "45-55", "55-65", "65-70", ">=70")
 
+
 # Process the data
-df_processed <- df_all %>%
+df_fig3_processed <- df_all %>%
   # Filter for capital, labour, and specified years
-  filter(name %in% c("capital", "labour"), year %in% c(2002, 2018)) %>%
+  filter(name %in% c(capital_name, labour_name), year %in% c(2002, 2018)) %>%
   # Filter for specified age groups
   filter(age %in% age_order) %>%
   # Group by year, name, and age to sum value1
@@ -327,10 +336,10 @@ df_processed <- df_all %>%
   select(age, name, growth)
 
 
-p <- ggplot(df_processed, aes(x = age, y = growth, fill = name)) +
+p <- ggplot(df_fig3_processed, aes(x = age, y = growth, fill = name)) +
   geom_bar(stat = "identity", position = "dodge") +
-  scale_fill_manual(values = c("capital" = "#4F81BD", "labour" = "#00B050"), 
-                    labels = c("Capital", "Labour")) +
+  scale_fill_manual(values = c(capital_name = "#4F81BD", labour_name = "#00B050"), 
+                    labels = c(capital_name, labour_name)) +
   labs(
     title = "Growth in Capital and Labour Average Income (2002 to 2018) by Age Group",
     x = "Age Group",
@@ -361,30 +370,30 @@ ggsave("etc/paper/growth.png", plot = p, width = 8, height = 6, dpi = 300)
 base_year <- 2002
 age_range <- c("<15", "15-25", "25-35", "35-45", "45-55", "55-65", ">=65")
 # age_range <- c("55-65", "65-70", ">=70")
-var <- "labour"
+var <- labour_name
 
 df_value1 <- df_all[, c("year", "name", "age", "value")]
 df_value1 <- df_value1 %>%
   filter(
-    name %in% c("labour", "capital"), 
+    name %in% c(labour_name, capital_name), 
     year >= base_year & year <= 2018,
     age %in% age_range)
 
 df_value1_share <- df_value1 %>%
-  filter(name %in% c("labour", "capital")) %>%
+  filter(name %in% c(labour_name, capital_name)) %>%
   group_by(year, name) %>%
   summarize(all = sum(value), .groups = "drop")
 
-if (var == "capital") {
+if (var == capital_name) {
   df_value1_share <- df_value1_share %>%
     pivot_wider(names_from = name, values_from = all) %>%
-    mutate(percentage = (capital / (labour + capital)) * 100) %>%
+    mutate(percentage = (!!sym(capital_name) / (!!sym(labour_name) + !!sym(capital_name))) * 100) %>%
     select(year, percentage)
   legend_loc <- c(0.25, 0.25)
-} else if (var == "labour") {
+} else if (var == labour_name) {
   df_value1_share <- df_value1_share %>%
     pivot_wider(names_from = name, values_from = all) %>%
-    mutate(percentage = (labour / (labour + capital)) * 100) %>%
+    mutate(percentage = (!!sym(labour_name) / (!!sym(labour_name) + !!sym(capital_name))) * 100) %>%
     select(year, percentage)
   legend_loc <- c(0.25, 0.92)
 }
@@ -393,7 +402,7 @@ df_value2 <- df_all[, c("year", "name", "age", "value2")]
 
 df_value_base <- df_value2 %>%
   filter(
-    name %in% c("labour", "benefits", "capital", "total"), 
+    name %in% c(labour_name, "benefits", capital_name, "total"), 
     year == base_year,
     age %in% age_range)
 
@@ -410,15 +419,15 @@ for (proc_year in base_year:2018){
     mutate(total = value2 * count)
   
   proc_result <- proc_df_value %>%
-    filter(name %in% c("labour", "capital")) %>%
+    filter(name %in% c(labour_name, capital_name)) %>%
     group_by(year, name) %>%
     summarize(all = sum(total), .groups = "drop")
   
-  if (var == "labour") {
+  if (var == labour_name) {
     all_results[[index]] <- list(
       year = proc_year, 
       percentage_fixed = 100.0 * proc_result$all[2] / (proc_result$all[1] + proc_result$all[2]))
-  } else if (var == "capital") {
+  } else if (var == capital_name) {
     all_results[[index]] <- list(
       year = proc_year, 
       percentage_fixed = 100.0 * proc_result$all[1] / (proc_result$all[1] + proc_result$all[2]))
@@ -440,7 +449,8 @@ all_results <- all_results %>%
                names_to = "type", 
                values_to = "percentage")
 
-p <- ggplot(all_results, aes(x = year, y = percentage, color=type)) +
+df_fig4_processed <- all_results
+p <- ggplot(df_fig4_processed, aes(x = year, y = percentage, color=type)) +
   geom_line(linewidth = 1.2) +  # Bolder line with Excel-like blue
   labs(
     title = paste0(paste0(var, " / (labour + capital income)")),
@@ -474,12 +484,12 @@ ggsave(paste0("etc/paper/", var, "_income_plot_based_", base_year, ".png"), plot
 df_value1 <- df_all[, c("year", "name", "age", "value")]
 df_value1 <- df_value1 %>%
   filter(
-    name %in% c("labour", "capital"), 
+    name %in% c(labour_name, capital_name), 
     year >= base_year & year <= 2023,
     age %in% age_range)
 
 df_value1_all <- df_value1 %>%
-  filter(name %in% c("labour", "capital")) %>%
+  filter(name %in% c(labour_name, capital_name)) %>%
   group_by(year, name) %>%
   summarize(all = sum(value), .groups = "drop")
 
@@ -491,8 +501,8 @@ df_value1_all <- df_value1_all %>%
 df_value1_share <- df_value1_all %>%
   pivot_wider(names_from = name, values_from = all) %>%
   mutate(
-    percentage = (100 * labour / (labour + capital)),
-    percentage2 = (100.0 * labour / (labour + capital + trustee + company)),
+    percentage = (100 * !!sym(labour_name) / (!!sym(labour_name) + !!sym(capital_name))),
+    percentage2 = (100.0 * !!sym(labour_name) / (!!sym(labour_name) + !!sym(capital_name) + trustee + company)),
     ) %>%
   select(
     year, 
@@ -508,8 +518,11 @@ df_long <- pivot_longer(
 )
 
 legend_loc <- c(0.95, 0.25)
+
+df_fig5_processed <- df_long
+
 # Create the time series plot
-p<-ggplot(data = df_long, aes(x = year, y = value, color = type)) +
+p<-ggplot(data = df_fig5_processed, aes(x = year, y = value, color = type)) +
   geom_line() +
   geom_point() +
   labs(
@@ -544,4 +557,20 @@ p<-ggplot(data = df_long, aes(x = year, y = value, color = type)) +
 
 ggsave(paste0("etc/paper/entity_plot.png"), plot = p, width = 8, height = 6, dpi = 300)
 
+list_of_dfs <- list(
+  "df_fig1_processed" = df_fig1_processed, 
+  "df_fig1_processed2" = df_fig1_processed2,
+  "df_fig2_processed" = df_fig2_processed,
+  "df_fig2_processed2" = df_fig2_processed,
+  "df_fig3_processed" = df_fig3_processed,
+  "df_fig4_processed" = df_fig4_processed,
+  "df_fig5_processed" = df_fig5_processed
+)
+
+if (use_sensitivity == TRUE) {
+  output_name <- "output_data_sensitivity.xlsx"
+} else {
+  output_name <- "output_data.xlsx"
+}
+write_xlsx(list_of_dfs, output_name)
 
