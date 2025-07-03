@@ -53,12 +53,19 @@ df_all <- df_all %>%
     "value2" = "To release...5"
   )
 
+# df_count <- df_count %>%
+#   rename(
+#     "year" = "...1",
+#     "age" = "...2",
+#     "count" = "To release"
+#   )
 df_count <- df_count %>%
-  rename(
-    "year" = "...1",
-    "age" = "...2",
-    "count" = "To release"
-  )
+   rename(
+     "year" = "...1",
+     "age" = "...3",
+     "count" = "To release"
+   )
+
 
 df_all$value1 <- as.numeric(df_all$value1, na.rm=TRUE)
 df_all$value2 <- as.numeric(df_all$value2, na.rm=TRUE)
@@ -70,7 +77,7 @@ if (use_sensitivity == TRUE) {
   capital_name <- "capital_sensitivity"
 } else {
   labour_name <- "labour"
-  capital_name <- capital_name
+  capital_name <- "capital"
 }
 
 # <><><><><><><><><><><><><><><><>
@@ -370,7 +377,8 @@ ggsave("etc/paper/growth.png", plot = p, width = 8, height = 6, dpi = 300)
 base_year <- 2002
 age_range <- c("<15", "15-25", "25-35", "35-45", "45-55", "55-65", ">=65")
 # age_range <- c("55-65", "65-70", ">=70")
-var <- labour_name
+# var <- labour_name
+var <- capital_name
 
 df_value1 <- df_all[, c("year", "name", "age", "value")]
 df_value1 <- df_value1 %>%
@@ -397,6 +405,7 @@ if (var == capital_name) {
     select(year, percentage)
   legend_loc <- c(0.25, 0.92)
 }
+
 
 df_value2 <- df_all[, c("year", "name", "age", "value2")]
 
@@ -442,14 +451,15 @@ all_results <- all_results %>%
   left_join(df_value1_share, by = "year")
 
 
-
 all_results <- all_results %>%
-  pivot_longer(# cols = c(percentage_fixed, percentage), 
-               cols = c(percentage), 
+  pivot_longer(cols = c(percentage_fixed, percentage), 
+               # cols = c(percentage), 
                names_to = "type", 
                values_to = "percentage")
 
 df_fig4_processed <- all_results
+
+
 p <- ggplot(df_fig4_processed, aes(x = year, y = percentage, color=type)) +
   geom_line(linewidth = 1.2) +  # Bolder line with Excel-like blue
   labs(
@@ -493,6 +503,24 @@ df_value1_all <- df_value1 %>%
   group_by(year, name) %>%
   summarize(all = sum(value), .groups = "drop")
 
+
+
+# df_value1 <- df_value1 %>%
+#   filter(
+#     name %in% c(labour_name, capital_name), 
+#     year >= base_year & year <= 2018,
+#     age %in% age_range)
+# 
+# df_value1_share <- df_value1 %>%
+#   filter(name %in% c(labour_name, capital_name)) %>%
+#   group_by(year, name) %>%
+#   summarize(all = sum(value), .groups = "drop")
+# df_value1_share <- df_value1_share %>%
+#   pivot_wider(names_from = name, values_from = all) %>%
+#   mutate(percentage = (!!sym(labour_name) / (!!sym(labour_name) + !!sym(capital_name))) * 100) %>%
+#   select(year, percentage)
+
+
 df_value1_all <- bind_rows(df_value1_all, df_entity)
 df_value1_all <- df_value1_all[order(df_value1_all$year, df_value1_all$name), ]
 df_value1_all <- df_value1_all %>%
@@ -520,6 +548,7 @@ df_long <- pivot_longer(
 legend_loc <- c(0.95, 0.25)
 
 df_fig5_processed <- df_long
+
 
 # Create the time series plot
 p<-ggplot(data = df_fig5_processed, aes(x = year, y = value, color = type)) +
